@@ -68,7 +68,7 @@ public class UserController {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(new Status(200, "Success"), user), HttpStatus.OK);
 	}
 
-	@GetMapping("/login")
+	@PostMapping("/login")
 	public ResponseEntity<CustomResponse> login(@RequestBody Credentials credentials) {
 		Users user = userRepo.login(credentials.getEmail(), credentials.getUserPassword());
 		return new ResponseEntity<CustomResponse>(new CustomResponse(new Status(200, "Success"), user), HttpStatus.OK);
