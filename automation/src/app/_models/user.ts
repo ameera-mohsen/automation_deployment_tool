@@ -1,7 +1,7 @@
-﻿export class User {
-    id: number;
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
+﻿export interface User {
+ 
+    userId: string;
+    displayName: string;
+    email: string;
+    groups: string;
 }
