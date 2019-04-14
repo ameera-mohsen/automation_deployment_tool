@@ -9,7 +9,8 @@ import { ResponseStatus } from '../_models/responseStatus';
 import { ResponseBody } from '../_models/responseBody';
 import { UserCredentialsResBody } from '../_models/userCredentialsResBody';
 
-@Component({ templateUrl: 'login.component.html' })
+@Component({ templateUrl: 'login.component.html'  ,
+styleUrls: ['../css/_all-skins.min.css'] })
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
     resStatus = {} as ResponseStatus;
     userCred = {} as UserCredentials;
     userResBody: UserCredentialsResBody;
+    usrOrpassInvalid = false;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -78,6 +80,7 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['home']);
                 },
                 error => {
+                    this.usrOrpassInvalid=true;
                     this.alertService.error(error);
                     this.loading = false;
                 });

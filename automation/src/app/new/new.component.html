@@ -56,48 +56,48 @@
         </div>
 
         <div class="form-group">
-          <label for="Layers">Layers: </label>
-          <label>
+          <label for="Layers" class= "checkbox_space">Layers: </label>
+          
+          <label class="checkbox_space">
             <input type="checkbox" [(ngModel)]="WPS" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             WPS
           </label>
 
-          <label>
+          <label class="checkbox_space">
             <input type="checkbox" [(ngModel)]="ODM" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             ODM
           </label>
 
-          <label>
+          <label class="checkbox_space" >
             <input type="checkbox" [(ngModel)]="IIB" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             IIB
           </label>
 
-          <label>
+          <label class="checkbox_space">
             <input type="checkbox" [(ngModel)]="WAS" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             WAS
           </label>
 
-          <label>
+          <label class="checkbox_space"> 
             <input type="checkbox" [(ngModel)]="DP" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             DP
           </label>
 
-          <label>
+          <label class="checkbox_space">
             <input type="checkbox" [(ngModel)]="DB" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             DB
           </label>
-          <label>
+          <label class="checkbox_space">
             <input type="checkbox" [(ngModel)]="WSRR" data-md-icheck (change)="toggleVisibility($event)"
               [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}" />
             WSRR
           </label>
-        </div>
 
         <div class="form-group">
           <label for="status">Status:</label>
