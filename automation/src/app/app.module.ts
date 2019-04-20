@@ -21,6 +21,7 @@ import { FilterPipe } from './pipes/filter';
 import { EditRequestComponent } from './edit/edit.component';
 import { NewDeploymentComponent } from './new/new.component';
 import { ProgressSpinnerOverviewExample } from './common/progress-spinner-overview-example';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import { ProgressSpinnerOverviewExample } from './common/progress-spinner-overvi
         ReactiveFormsModule,
         HttpClientModule,
         routing,
-        FormsModule
+        FormsModule,
+        NgMultiSelectDropDownModule.forRoot()
     ],
     declarations: [
         AppComponent,
