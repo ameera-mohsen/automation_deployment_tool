@@ -139,25 +139,23 @@ export class HomeComponent implements OnInit {
         
         console.log(this.requestNumber);
         if (this.selectedLayer) {
-            params.append('layer', this.selectedLayer);
+            params = params.append('Layer', this.selectedLayer);
         }
         if (this.selectedEnv) {
-            params.append('environment', this.selectedEnv);
+            params = params.append('Environment', this.selectedEnv);
         }
         if (this.selectedService) {
-            params.append('affectedService', this.selectedService);
+            params = params.append('AffectedService', this.selectedService);
         }
         if (this.selectedStatus) {
-            params.append('status', this.selectedStatus);
+            params = params.append('Status', this.selectedStatus);
         }
         console.log('Search Request.. Parameters:: >> ' + params.getAll);
 
         this.searchService.searchRequestsByCriteria(params).subscribe((data: Request) => {
-          this.resBody = data.responseBody[0];
-         // this.allRequestBody = this.resBody;
-        console.log(' <<<<<< responseBody.id  >>>>>> ' + this.resBody.id);
-        //    this is valid one to get the value from nested JSON 
-             console.log('      <<<<<< resBody id >>>>>> ' + data.responseBody[0].id);
+         
+         this.allRequestBody = data.responseBody;
+      
         });
     }
     loadAllDeployments() {

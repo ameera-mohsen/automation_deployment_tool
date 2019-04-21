@@ -8,6 +8,6 @@ export class LayersService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Layer[]>(`https://pacific-brook-25356.herokuapp.com/api/Layers`);
+        return this.http.get<Layer[]>(`http://localhost:9030/api/Layers`);
     }
 }

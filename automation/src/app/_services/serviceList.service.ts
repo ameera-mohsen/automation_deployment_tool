@@ -10,7 +10,7 @@ export class ServiceListService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<Service[]>(`https://pacific-brook-25356.herokuapp.com/api/Services`);
+        return this.http.get<Service[]>(`http://localhost:9030/api/Services`);
     }
 
     

@@ -8,7 +8,7 @@ export class StatusService {
     constructor (private http : HttpClient) {}
 
     getAll() {
-        return this.http.get<Status[]>('https://pacific-brook-25356.herokuapp.com/api/Status');
+        return this.http.get<Status[]>('http://localhost:9030/api/Status');
     }
 }
 

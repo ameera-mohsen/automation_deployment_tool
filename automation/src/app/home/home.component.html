@@ -57,7 +57,7 @@
           </div>
           <div class="col-xs-3">
             <label for="ex1">Environment:</label>
-            <select class="form-control input-sm" id="Environments" type="text">
+            <select class="form-control input-sm" id="Environments" type="text" [(ngModel)]="selectedEnv">
               <option value="" selected>Please select</option>
               <option [value]="env.envName" *ngFor="let env of environments"> {{env.envName}}</option>
   
@@ -67,7 +67,7 @@
         <div class="form-group row">
           <div class="col-xs-3">
             <label for="ex1">Layer:</label>
-            <select class="form-control input-sm" id="Layers" type="text">
+            <select class="form-control input-sm" id="Layers" type="text" [(ngModel)]="selectedLayer">
               <option value="" selected>Please select</option>
               <option [value]="Layer.layerName" *ngFor="let Layer of layers"> {{Layer.layerName}}</option>
   
@@ -75,7 +75,7 @@
           </div>
           <div class="col-xs-3">
             <label for="ex1">Status:</label>
-            <select class="form-control input-sm" id="Statuses" type="text">
+            <select class="form-control input-sm" id="Statuses" type="text" [(ngModel)]="selectedStatus">
               <option value="" selected>Please select</option>
               <option [value]="St.statusName" *ngFor="let St of statuses"> {{St.statusName}}</option>
   
@@ -83,7 +83,7 @@
           </div>
           <div class="col-xs-3">
             <label for="ex1">Service:</label>
-            <select class="form-control input-sm" id="Services" type="text">
+            <select class="form-control input-sm" id="Services" type="text" [(ngModel)]="selectedService">
               <option value="" selected>Please select</option>
               <option [value]="service.serviceName" *ngFor="let service of services"> {{service.serviceName}}</option>
             </select>
