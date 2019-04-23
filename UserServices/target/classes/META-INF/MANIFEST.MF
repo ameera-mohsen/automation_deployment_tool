@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: amohsen
+Build-Jdk: 11.0.2
+Implementation-Title: UserServices
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.dxc.automation
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/UserServices
+Created-By: Maven Integration for Eclipse
+
