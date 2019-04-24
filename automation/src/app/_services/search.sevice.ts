@@ -17,12 +17,16 @@ export class SearchService {
 
 
     newRequest(req: ResponseBody) {
-        return this.http.post('http://localhost:8088/api/addDeploymentRequest', req);
+        return this.http.post('http://localhost:8086/api/addDeploymentRequest', req);
 
     }
 
+    updateRequestObj(req: ResponseBody) {
+        return this.http.put('http://localhost:8086/api/updateDeploymentRequest', req);
+    }
+
     updateRequest(reqId: String, newStatus: string): Observable<any> {
-        return this.http.put('http://localhost:8088/api/UpdateDeploymentRequestStatus/' + reqId + '/' + newStatus,
+        return this.http.put('http://localhost:8086/api/UpdateDeploymentRequestStatus/' + reqId + '/' + newStatus,
             {
                 headers: new HttpHeaders()
                     .append('Access-Control-Allow-Origin', '*')
@@ -34,16 +38,16 @@ export class SearchService {
     }
 
     getAllRequests(): Observable<any> {
-        return this.http.get('http://localhost:8088/api/DeploymentRequests');
+        return this.http.get('http://localhost:8086/api/DeploymentRequests');
     }
 
     getDeploymentReqByInitiatorUserId(userId: String): Observable<any>{
-        return this.http.get('http://localhost:8088/api/DeploymentReqByInitiatorUserId/'+userId);
+        return this.http.get('http://localhost:8086/api/DeploymentReqByInitiatorUserId/'+userId);
 
     }
 
     getDeploymentReqByAssignedUserId(userId: String): Observable<any>{
-        return this.http.get('http://localhost:8088/api/DeploymentReqByAssignedUserId/'+userId);
+        return this.http.get('http://localhost:8086/api/DeploymentReqByAssignedUserId/'+userId);
 
     }
 
@@ -53,22 +57,22 @@ export class SearchService {
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.append('Access-Control-Allow-Origin', '*');
         console.log(" Param " + id)
-        return this.http.get(`http://localhost:8088/api/DeploymentRequestById/` + id);
+        return this.http.get(`http://localhost:8086/api/DeploymentRequestById/` + id);
     }
 
     searchRequestByInitiatorUserId(userId: string): Observable<any> {
-        return this.http.get(`http://localhost:8088/api/DeploymentReqByInitiatorUserId/` + userId);
+        return this.http.get(`http://localhost:8086/api/DeploymentReqByInitiatorUserId/` + userId);
     }
 
     searchReqestByAssignedUserId(userId: string): Observable<any> {
-        return this.http.get(`http://localhost:8088/api/DeploymentReqByAssignedUserId/` + userId);
+        return this.http.get(`http://localhost:8086/api/DeploymentReqByAssignedUserId/` + userId);
     }
 
     searchRequestsByCriteria(params: HttpParams): Observable<any> {
         console.log("Param::>>> " + params);
         let headers: HttpHeaders = new HttpHeaders();
         //headers = headers.append('Access-Control-Allow-Origin', '*');
-        return this.http.get('http://localhost:8088/api/searchDeploymentRequestByCriteria',
+        return this.http.get('http://localhost:8086/api/searchDeploymentRequestByCriteria',
         {params: params});
     }
 
