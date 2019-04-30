@@ -19,15 +19,16 @@ export class NewDeploymentComponent implements OnInit {
   
 
   assignOnUser: User = {
-    "userId": "5c49c60e1b8f732ffcff44de",
-    "displayName": "Sara Omran",
-    "email": "sara.omran@dxc.com",
-    "groups": "TESTING"
+    "userId": "5c5807e7fb6fc0356792bd44",
+    "displayName": "DEPLOYMENT TEAM",
+    "email": "SADAD_AMS@dxc.com",
+    "groups": "DEPLOYMENT"
   };
 
+ 
   pickedByUser: User = {
     "userId": "5c49c60e1b8f732ffcff44de",
-    "displayName": "Sara Omran",
+    "displayName": "TESTING TEAM",
     "email": "sara.omran@dxc.com",
     "groups": "TESTING"
   };
@@ -70,10 +71,6 @@ export class NewDeploymentComponent implements OnInit {
   email: string;
   group: string;
 
-  dropdownList = [];
-  selectedItems = [];
-  dropdownSettings = {};
-
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private layerService: LayersService,
     private statusService: StatusService, private serviceListService: ServiceListService,
     private environmentService: EnvironmentService, private searchService: SearchService) {
@@ -106,31 +103,15 @@ export class NewDeploymentComponent implements OnInit {
     this.newForm = this.formBuilder.group({
       Environment: [this.environment.values, Validators.required],
       Layers: [this.selectedLayer, Validators.required],
-      status: ['IN_PROGRESS'],
+      status: ['SENT'],
       defectId: [this.defectId, Validators.required],
-      assignOnGroup: ['TESTING'],
+      assignOnGroup: ['DEPLOYMENT'],
       requestDate: [this.jstoday, Validators.required],
       deploymentTime: [this.jstoday, Validators.required],
       reason: [this.reason, Validators.required],
       releaseNote: [this.releaseNote, Validators.required],
-    affectedService: [this.selectedAffectedService, Validators.required],
+      affectedService: [this.selectedAffectedService, Validators.required],
     });
-
-    this.dropdownList = [
-      'Payment' ,'Refund','Upload','Common' ,'Customer','Account','Cleanup'
-    ];
-    /*this.selectedItems = [
-      { item_id: 3, item_text: 'Pune' },
-      { item_id: 4, item_text: 'Navsari' }
-    ];*/
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      itemsShowLimit: 3,
-      allowSearchFilter: true,
-      enableCheckAll: false
-    };
 
   }
 
@@ -145,7 +126,6 @@ export class NewDeploymentComponent implements OnInit {
     this.resBody.environment = this.selectedenv;
     this.resBody.layer = this.selectedLayer;
     //this.resBody.affectedService = this.selectedAffectedService;
-    this.resBody.affectedService = this.selectedItems;
     this.resBody.status = this.newForm.get('status').value;
     this.resBody.defectId = this.newForm.get('defectId').value;
     this.resBody.assignOnGroup = this.newForm.get('assignOnGroup').value;
@@ -226,26 +206,6 @@ export class NewDeploymentComponent implements OnInit {
     console.log(" layers log: " + this.selectedLayer);
 
   }
-
-
-  onItemSelect(selectedItem : any){
-
-    this.selectedItems.push(selectedItem);
-    this.selectedItems.pop();
-
-  } 
-
-  onItemDeSelect(item :any){
-    for(var i=0;i<this.selectedItems.length;i++){
-      if(this.selectedItems[i]==item){
-        this.selectedItems.splice(i,1);
-      }
-    }
- }
-
- 
-
-
 
 
   toggleVisibility(e: any) {
