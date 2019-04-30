@@ -116,8 +116,8 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	public DeploymentRequest updateDeploymentStatus(String deploymentRequestId, String newStatus, Date deploymentTime) {
 		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentRequestId);
 		enrichDeploymentRequest(deploymentReqToUpdated, newStatus, deploymentTime);
-		APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
-				INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
+		//APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
+				//INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
 		return mongoTemplate.save(deploymentReqToUpdated);
 	}
 
@@ -196,6 +196,8 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			Req.setDeploymentTime(deploymentTime);
 			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY);
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
+			System.err.println("--------------------user ----- "+Req.getAssignOnUser());
+			
 		}
 	}
 

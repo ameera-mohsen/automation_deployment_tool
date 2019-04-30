@@ -24,7 +24,7 @@ export class EditRequestComponent implements OnInit {
     editForm: FormGroup;
     requestInfo: RequestInfo[];
     reqInfo = {} as RequestInfo;
-    status: string[] = ['APPROVED', 'REJECTED','PENDING','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED,POST_PONED'];
+    status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED,POST_PONED'];
     selectedStatus: string = '';
     id: string;
     displayName: string;
