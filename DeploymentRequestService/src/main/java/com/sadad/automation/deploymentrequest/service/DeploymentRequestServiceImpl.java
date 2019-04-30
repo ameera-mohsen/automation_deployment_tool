@@ -33,7 +33,20 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
-		return mongoTemplate.insert(deploymentRequest);
+		if(deploymentRequest != null ) {
+			String assignOnUserEmail = "" , pickedByUserEmail= "";
+			if(deploymentRequest.getAssignOnUser()!=null) {
+				 assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
+			}if(deploymentRequest.getPickedByUser()!=null) {
+				 pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
+			}
+			String[] list = new String[2];
+			list[0] = assignOnUserEmail;
+			list[1] = pickedByUserEmail;
+			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY);
+			return mongoTemplate.insert(deploymentRequest);
+		}
+		return null;
 	}
 
 	@Override
@@ -163,18 +176,23 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		String currentStatus = Req.getStatus();
 		if (checkStatus(currentStatus, newStatus)) {
 			Req.setStatus(newStatus);
-			if (newStatus.equals(String.valueOf(StatusCode.PENDING))) {
-				Req.setAssignOnUser(APICaller.UserAPI());
-			} else if (newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
-				Req.setAssignOnUser(APICaller.UserAPI());
-			} else if (newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))) {
+			//System.err.println("----------"+newStatus +"-------");
+			if (newStatus.equals(String.valueOf(StatusCode.PENDING_APPROVAL))
+					||newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))
+					||newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
 				Req.setAssignOnUser(pickedBy);
-			} else if (newStatus.equals(String.valueOf(StatusCode.COMPLETED))) {
-				Req.setAssignOnUser(intitiator);
-			} else if (newStatus.equals(String.valueOf(StatusCode.APPROVED))
-					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))) {
-				Req.setAssignOnUser(pickedBy);
+				
+			} else if (
+					newStatus.equals(String.valueOf(StatusCode.APPROVED))
+					|| newStatus.equals(String.valueOf(StatusCode.IN_PROGRESS))) {
+				Req.setAssignOnUser(APICaller.UserAPI());
 			}
+			 else if (newStatus.equals(String.valueOf(StatusCode.COMPLETED))
+					 ||newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
+					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))) {
+				Req.setAssignOnUser(intitiator);
+			 }
+			
 			Req.setDeploymentTime(deploymentTime);
 			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY);
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
@@ -188,10 +206,13 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			group = "DEPLOYMENT";
 			break;
 		case "REJECTED":
+			group = "DEVELOPMENT";
+			break;
+		case "PENDING_APPROVAL":
 			group = "DEPLOYMENT";
 			break;
-		case "PENDING":
-			group = "TESTING";
+		case "PENDING_VERIFICATION":
+			group = "DEPLOYMENT";
 			break;
 		case "INFO_REQUESTED":
 			group = "DEPLOYMENT";

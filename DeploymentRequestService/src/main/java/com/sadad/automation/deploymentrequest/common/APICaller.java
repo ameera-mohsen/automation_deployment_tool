@@ -12,7 +12,9 @@ import com.sadad.automation.deploymentrequest.entity.Users;
 
 public class APICaller {
 
-	static String EMAIL_URL = "https://arcane-fjord-15809.herokuapp.com/api/Notification";
+//	static String EMAIL_URL = "https://arcane-fjord-15809.herokuapp.com/api/Notification";
+	static String EMAIL_URL = "http://localhost:8066/api//Notification";
+	static String EMAIL_LIST_URL = "http://localhost:8066/api//NotificationList";
 	static String USER_URL = "http://localhost:8099/api/FindNameandEmail/FindNameandEmail";
 
 	
@@ -21,7 +23,7 @@ public class APICaller {
 		System.err.println("USER API");
 		// SARA Omran ID 
 		//String userId = "5c49c60e1b8f732ffcff44de";
-		Users userDTO = new Users("5c49c60e1b8f732ffcff44de", "Sara Omran", "Sara.Om@dxc.com", "TESTING");
+		Users userDTO = new Users("5c5807e7fb6fc0356792bd44", "Sara Elnagar", "SADAD_AMS@dxc.com", "DEPLOYMENT");
 /*
 		RestTemplate temp = new RestTemplate();
 		HttpEntity<String> request = null;
@@ -50,11 +52,29 @@ public class APICaller {
 		HttpEntity<Email> request = null;
 		try {
 			// Enrich request with required request body and Header
-			request = new HttpEntity<>(buildEmail(to, body), buildHeader());
+			request = new HttpEntity<>(buildEmail(to,null, body), buildHeader());
 			// Send request after define the requestBody, httpMethod, API endPoind, and
 			// requestType
 			// NOTE: HTTPMethod change based on outgoing request, PUT,POST,GET or DELETE
 			response = temp.exchange(EMAIL_URL, HttpMethod.POST, request, Email.class);
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		return response;
+	}
+	
+	public static ResponseEntity<Email> EmailAPIList(String[] toList, String body) {
+		// RestTemplate used to perform HTTP requests.
+		RestTemplate temp = new RestTemplate();
+		ResponseEntity<Email> response = null;
+		HttpEntity<Email> request = null;
+		try {
+			// Enrich request with required request body and Header
+			request = new HttpEntity<>(buildEmail("",toList, body), buildHeader());
+			// Send request after define the requestBody, httpMethod, API endPoind, and
+			// requestType
+			// NOTE: HTTPMethod change based on outgoing request, PUT,POST,GET or DELETE
+			response = temp.exchange(EMAIL_LIST_URL, HttpMethod.POST, request, Email.class);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -65,12 +85,14 @@ public class APICaller {
 	 * Below is a common method used to build the email before send it as a POST
 	 * Request
 	 */
-	private static Email buildEmail(String to, String body) {
+	private static Email buildEmail(String to, String[]toList, String body) {
 		System.err.println("build email");
 		Email email = new Email();
 		email.setSubject("Automation Service - Task assigned on you");
 		email.setTo(to);
-		email.setCc("karim.say.ahmed@gmail.com");
+		email.setToList(toList);
+//		email.setCc("karim.say.ahmed@gmail.com");
+		email.setCc("doaaessam4455@gmail.com");
 		email.setBody(body);
 		return email;
 	}
