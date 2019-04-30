@@ -6,6 +6,13 @@ public class Email {
 	private String cc;
 	private String subject;
 	private String body;
+	private String[] toList;
+	public String[] getToList() {
+		return toList;
+	}
+	public void setToList(String[] toList) {
+		this.toList = toList;
+	}
 	public String getTo() {
 		return to;
 	}

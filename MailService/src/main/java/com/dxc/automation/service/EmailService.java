@@ -9,5 +9,7 @@ public interface EmailService {
 	void sendEmail(String to, String cc, String subject, String body);
 
 	void sendEmailWithAttachment(String to, String cc, String subject, String body, String filePath);
+	
+	void sendEmailToList(String[] toList, String cc, String subject, String body);
 
 }

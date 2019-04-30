@@ -43,6 +43,19 @@ public class MailController {
 		email.setSubject("Automation Service Testing - Email Service");
 		return email;
 	}
+	
+	@GetMapping("/mailformList")
+	public Email getEmailFormList() {
+		Email email = new Email();
+		String[] str = new String[2];
+		str[0] = "--Replace with Email 1--";
+		str[1] = "--Replace with Email 2--";
+		email.setToList(str);
+		email.setCc("--Replace with Email--");
+		email.setBody("--Replace with Body--");
+		email.setSubject("Automation Service Testing - Email Service");
+		return email;
+	}
 
 	/**
 	 * Operation is for sending email run the project and use the following URL :
@@ -53,6 +66,11 @@ public class MailController {
 		LOGGER.debug("1----sendEmail--------------- ");
 		System.err.println("send Email");
 		emailService.sendEmail(email.getTo(), email.getCc(), email.getSubject(), email.getBody());
+	}
+	
+	@PostMapping("/NotificationList")
+	public void sendEmailToList(@RequestBody Email email) {
+		emailService.sendEmailToList(email.getToList(), email.getCc(), email.getSubject(), email.getBody());
 	}
 
 	/**

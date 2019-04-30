@@ -68,6 +68,28 @@ public class EmailServiceImpl implements EmailService {
 
 		this.buildSimpleEmail(to, cc, subject, body);
 	}
+	
+	@Override
+	public void sendEmailToList(String[] toList, String cc, String subject, String body) {
+		System.err.println("New operation to sent mail to List");
+		MimeMessage msg = mailSender.createMimeMessage();
+		MimeMessageHelper msgHelper;
+		boolean sentFlag;
+		try {
+			msgHelper = new MimeMessageHelper(msg, true);
+			msgHelper.setTo(toList);
+			msgHelper.setCc(cc);
+			msgHelper.setSubject(subject);
+			msgHelper.setText(body);
+			mailSender.send(msg);
+			sentFlag = true;
+		} catch (MessagingException e) {
+			sentFlag = false;
+		} catch (MailException e) {
+			sentFlag = false;
+		}
+		System.err.println("-------sentFlag ------------ " + sentFlag);
+	}
 
 	@Override
 	public void sendEmailWithAttachment(String to, String cc, String subject, String body, String filePath) {
