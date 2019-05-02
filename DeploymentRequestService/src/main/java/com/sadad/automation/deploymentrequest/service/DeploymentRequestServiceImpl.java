@@ -176,7 +176,6 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		String currentStatus = Req.getStatus();
 		if (checkStatus(currentStatus, newStatus)) {
 			Req.setStatus(newStatus);
-			//System.err.println("----------"+newStatus +"-------");
 			if (newStatus.equals(String.valueOf(StatusCode.PENDING_APPROVAL))
 					||newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))
 					||newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
@@ -196,7 +195,6 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			Req.setDeploymentTime(deploymentTime);
 			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY);
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
-			System.err.println("--------------------user ----- "+Req.getAssignOnUser());
 			
 		}
 	}

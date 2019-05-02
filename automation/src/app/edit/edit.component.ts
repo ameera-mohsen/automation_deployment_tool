@@ -111,7 +111,8 @@ export class EditRequestComponent implements OnInit {
 
         this.buildRequest();
         //console.log('blablablaaaaaaaa' + this.resBody.reason);
-        this.searchService.updateRequestObj(this.resBody)
+        //this.searchService.updateRequestObj(this.resBody)
+        this.searchService.updateRequest(this.resBody.id,this.resBody.status)
           .subscribe(
             (data: Request) => {
               if(data.responseStatus.statusCode === 200) {

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.sadad.automation.deploymentrequest.DeploymentRequestServiceApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 22.786 s - in com.sadad.automation.deploymentrequest.DeploymentRequestServiceApplicationTests
