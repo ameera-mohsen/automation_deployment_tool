@@ -34,19 +34,30 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
 		if(deploymentRequest != null ) {
-			String assignOnUserEmail = "" , pickedByUserEmail= "";
-			if(deploymentRequest.getAssignOnUser()!=null) {
-				 assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
-			}if(deploymentRequest.getPickedByUser()!=null) {
-				 pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
-			}
+//			String assignOnUserEmail = "" , pickedByUserEmail= "";
+//			if(deploymentRequest.getAssignOnUser()!=null) {
+//				 assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
+//			}if(deploymentRequest.getPickedByUser()!=null) {
+//				 pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
+//			}
 			String[] list = new String[2];
-			list[0] = assignOnUserEmail;
-			list[1] = pickedByUserEmail;
-			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName());
+			list[0] = "ameera.mohsen@dxc.com";
+			list[1] = "mohamed.lotfi@dxc.com";
+			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(), getMailSubject(deploymentRequest));
 			return mongoTemplate.insert(deploymentRequest);
 		}
 		return null;
+	}
+	
+	private String getMailSubject(DeploymentRequest deploymentRequest) {
+		String affectedServices = "";
+		for (String str : deploymentRequest.getAffectedService()) {
+			affectedServices+="<" + str + ">";
+		}
+		System.err.println(affectedServices);
+		String mailSubject = "<S2>"+"<"+ deploymentRequest.getEnvironment() + ">" + affectedServices;
+		System.err.println(mailSubject);
+		return mailSubject;
 	}
 
 	@Override
@@ -100,7 +111,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			request.setPickedByUser(pickedByUser);
 			request.setAssignOnUser(pickedByUser);
 			APICaller.EmailAPI(request.getInitiatorUser().getEmail(),
-					INITIATOR_EMAIL_BODY + request.getAssignOnUser().getDisplayName());
+					INITIATOR_EMAIL_BODY + request.getAssignOnUser().getDisplayName(), getMailSubject(request));
 			return mongoTemplate.save(request);
 		} else {
 			throw new DeploymentReqException("Deployment Request " + deploymentReqId + " Not Found..");
@@ -197,7 +208,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			 }
 			
 			Req.setDeploymentTime(deploymentTime);
-			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName());
+			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(), getMailSubject(Req));
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
 			
 		}

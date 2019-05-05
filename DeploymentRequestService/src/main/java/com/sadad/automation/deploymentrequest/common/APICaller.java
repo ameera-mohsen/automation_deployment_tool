@@ -1,5 +1,7 @@
 package com.sadad.automation.deploymentrequest.common;
 
+import javax.security.auth.Subject;
+
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,14 +47,14 @@ public class APICaller {
 	}
 	
 	
-	public static ResponseEntity<Email> EmailAPI(String to, String body) {
+	public static ResponseEntity<Email> EmailAPI(String to, String body, String subject) {
 		// RestTemplate used to perform HTTP requests.
 		RestTemplate temp = new RestTemplate();
 		ResponseEntity<Email> response = null;
 		HttpEntity<Email> request = null;
 		try {
 			// Enrich request with required request body and Header
-			request = new HttpEntity<>(buildEmail(to,null, body), buildHeader());
+			request = new HttpEntity<>(buildEmail(to,null, body, subject), buildHeader());
 			// Send request after define the requestBody, httpMethod, API endPoind, and
 			// requestType
 			// NOTE: HTTPMethod change based on outgoing request, PUT,POST,GET or DELETE
@@ -63,14 +65,14 @@ public class APICaller {
 		return response;
 	}
 	
-	public static ResponseEntity<Email> EmailAPIList(String[] toList, String body) {
+	public static ResponseEntity<Email> EmailAPIList(String[] toList, String body, String Subject) {
 		// RestTemplate used to perform HTTP requests.
 		RestTemplate temp = new RestTemplate();
 		ResponseEntity<Email> response = null;
 		HttpEntity<Email> request = null;
 		try {
 			// Enrich request with required request body and Header
-			request = new HttpEntity<>(buildEmail("",toList, body), buildHeader());
+			request = new HttpEntity<>(buildEmail("",toList, body, Subject), buildHeader());
 			// Send request after define the requestBody, httpMethod, API endPoind, and
 			// requestType
 			// NOTE: HTTPMethod change based on outgoing request, PUT,POST,GET or DELETE
@@ -85,14 +87,15 @@ public class APICaller {
 	 * Below is a common method used to build the email before send it as a POST
 	 * Request
 	 */
-	private static Email buildEmail(String to, String[]toList, String body) {
+	private static Email buildEmail(String to, String[]toList, String body, String subject) {
 		System.err.println("build email");
 		Email email = new Email();
-		email.setSubject("Automation Service - Task assigned on you");
+//		email.setSubject("Automation Service - Task assigned on you");
+		email.setSubject(subject);
 		email.setTo(to);
 		email.setToList(toList);
 //		email.setCc("karim.say.ahmed@gmail.com");
-		email.setCc("doaaessam4455@gmail.com");
+		email.setCc("doaa.ibrahim@dxc.com");
 		email.setBody(body);
 		return email;
 	}

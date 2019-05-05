@@ -67,6 +67,7 @@ export class EditRequestComponent implements OnInit {
             currentStatus: ['', Validators.required],
             deploymentTime: ['', Validators.required],
             deploymentComment: [''],
+            serviceVersion: [''],
             status: [this.status]
           });
           
@@ -78,6 +79,7 @@ export class EditRequestComponent implements OnInit {
                 currentStatus: data.responseBody.status,
                 deploymentTime: data.responseBody.deploymentTime,
                 deploymentComment: '',
+                serviceVersion:'',
                 status: this.selectedStatus,
             });
             this.resBody= data.responseBody;
@@ -88,6 +90,7 @@ export class EditRequestComponent implements OnInit {
       // fill resBody with data from Form
       this.resBody.status = this.editForm.get('status').value;
       this.reqInfo.comment = this.editForm.get('deploymentComment').value;
+      this.reqInfo.version = this.editForm.get('serviceVersion').value;
       this.requestInfo = [this.reqInfo];
       this.resBody.requestInfo = this.requestInfo;
     }

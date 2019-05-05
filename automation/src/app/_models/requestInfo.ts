@@ -3,4 +3,5 @@ export interface RequestInfo {
     displayName: string;
     comment: string;
     time: string;
+    version: String;
 }
