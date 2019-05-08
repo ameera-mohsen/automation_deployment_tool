@@ -34,15 +34,15 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
 		if(deploymentRequest != null ) {
-//			String assignOnUserEmail = "" , pickedByUserEmail= "";
-//			if(deploymentRequest.getAssignOnUser()!=null) {
-//				 assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
-//			}if(deploymentRequest.getPickedByUser()!=null) {
-//				 pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
-//			}
+			String assignOnUserEmail = "" , pickedByUserEmail= "";
+			if(deploymentRequest.getAssignOnUser()!=null) {
+				 assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
+			}if(deploymentRequest.getPickedByUser()!=null) {
+				 pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
+			}
 			String[] list = new String[2];
-			list[0] = "ameera.mohsen@dxc.com";
-			list[1] = "mohamed.lotfi@dxc.com";
+			list[0] = assignOnUserEmail;
+			list[1] = pickedByUserEmail;
 			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(), getMailSubject(deploymentRequest));
 			return mongoTemplate.insert(deploymentRequest);
 		}

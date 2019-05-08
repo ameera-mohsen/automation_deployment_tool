@@ -53,7 +53,7 @@ export class NewDeploymentComponent implements OnInit {
   marked = false;
   theCheckbox = false;
 
-  environment: string[] = ['SIT', 'PT', 'DEV', 'MFT'];
+  environment: string[] = ['SIT', 'PT', 'MFT'];
   layers = ['IIB', 'WPS', 'WSRR', 'WAS', 'DP', 'DB', 'WSRR', 'WAS'];
   affectedService = ['Payment', 'Refund', 'Upload', 'Common', 'Customer', 'Account', 'Cleanup'];
   selectedAffectedService: string = '';
@@ -103,11 +103,12 @@ export class NewDeploymentComponent implements OnInit {
     this.displayName = window.localStorage.getItem("displayName");
     this.email = window.localStorage.getItem("email");
 
-    this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-US', '+0530');
+    //this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-US', '+0530');
+    this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
     this.newForm = this.formBuilder.group({
       Environment: [this.environment.values, Validators.required],
       Layers: [this.selectedLayer, Validators.required],
-      status: ['SENT'],
+      status: ['NEW'],
       defectId: [this.defectId, Validators.required],
       assignOnGroup: ['DEPLOYMENT'],
       requestDate: [this.jstoday, Validators.required],
@@ -170,7 +171,7 @@ export class NewDeploymentComponent implements OnInit {
       subscribe(
         (data: Request) => {
           if (data.responseStatus.statusCode === 200) {
-            alert('Request updated successfully.');
+            alert('Request submitted successfully.');
             this.router.navigate(['home']);
           } else {
             alert(data.responseStatus + " will take you Home ");
