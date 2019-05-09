@@ -17,6 +17,7 @@ export class SearchService {
 
 
     newRequest(req: ResponseBody) {
+        req.status = 'SENT'
         return this.http.post('http://localhost:8086/api/addDeploymentRequest', req);
 
     }
