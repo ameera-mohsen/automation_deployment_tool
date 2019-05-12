@@ -42,6 +42,7 @@ export class HomeComponent implements OnInit {
     id: string;
     displayName: string;
     email: string;
+    group : string;
 
     currentUser: User;
     allRequestBody: ResponseBody[];
@@ -82,6 +83,7 @@ export class HomeComponent implements OnInit {
         this.id = window.localStorage.getItem("id");
         this.displayName = window.localStorage.getItem("displayName");
         this.email = window.localStorage.getItem("email");
+        this.group = window.localStorage.getItem("group");
 
 
         
