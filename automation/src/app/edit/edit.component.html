@@ -49,16 +49,48 @@
                 <div class="hidden">
                     <input type="text" formControlName="id" placeholder="id" name="id" class="form-control" id="id">
                 </div>
+
+
                 <div class="form-group">
                     <label for="id">Id:</label>
                     <input type="text" formControlName="id" placeholder="id" name="id" class="form-control" id="id"
                         readonly="true">
+                </div>
+            
+                <div class="form-group">
+                    <label for="id">Environment:</label>
+                    <input type="text" formControlName="environemnt" placeholder="environemnt" name="environemnt" class="form-control"
+                     id="environemnt"  readonly="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="id">Layer:</label>
+                    <input type="text" formControlName="layer" placeholder="layer" name="layer" class="form-control"
+                     id="layer"  readonly="true">
                 </div>
 
                 <div class="form-group">
                     <label for="currentStatus">Current Status:</label>
                     <input formControlName="currentStatus" placeholder="Current Status" name="currentStatus"
                         class="form-control" id="currentStatus" readonly="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="defectId">Defect ID:</label>
+                    <input formControlName="defectId" placeholder="defectId" name="defectId"
+                        class="form-control" id="defectId" readonly="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="assignOnGroup">AssignOn Group:</label>
+                    <input formControlName="assignOnGroup" placeholder="assignOnGroup" name="assignOnGroup"
+                        class="form-control" id="assignOnGroup" readonly="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="requestDate">Request Date:</label>
+                    <input formControlName="requestDate" placeholder="requestDate" name="requestDate"
+                        class="form-control" id="requestDate" readonly="true">
                 </div>
 
 
@@ -70,10 +102,26 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="reason">Deployment Reason:</label>
+                    <input formControlName="reason" placeholder="reason" name="reason"
+                        class="form-control" id="reason" readonly="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="releaseNote">Release Note: </label>
+                    <input formControlName="releaseNote" name="releaseNote" class="form-control" id="releaseNote" readonly="true">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="affectedService">Affected Service:</label>
+                    <input formControlName="affectedService" name="affectedService" class="form-control" id="affectedService" readonly="true">
+                  </div>
+
+                <div class="form-group">
                     <label for="status">New Status:</label>
                     <select formControlName="status" placeholder="status Time" name="status" class="form-control"
                         id="status">
-                        <option [value]="statu" *ngFor="let statu of status">{{statu}}</option>
+                        <option [value]="statu" *ngFor="let Status of status">{{Status}}</option>
                     </select>
                 </div>
 

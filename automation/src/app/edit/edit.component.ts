@@ -27,6 +27,14 @@ export class EditRequestComponent implements OnInit {
     status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'];
     selectedStatus: string = '';
     id: string;
+    environemnt: string;
+    layer: string;
+    defectId:string;
+    assignOnGroup:string;
+    requestDate:string;
+    reason:string;
+    releaseNote:string;
+    affectedService:string;
     displayName: string;
     email: string;
 
@@ -64,7 +72,15 @@ export class EditRequestComponent implements OnInit {
         this.editForm = this.formBuilder.group({
           resBody: [],
             id: [''],
+            environemnt:[''],
+            layer:[''],
             currentStatus: ['', Validators.required],
+            defectId:[''],
+            assignOnGroup:[''],
+            requestDate:[''],
+            reason:[''],
+            releaseNote:[''],
+            affectedService:[''],
             deploymentTime: ['', Validators.required],
             deploymentComment: [''],
             serviceVersion: [''],
@@ -78,6 +94,15 @@ export class EditRequestComponent implements OnInit {
                 id: data.responseBody.id,
                 currentStatus: data.responseBody.status,
                 deploymentTime: data.responseBody.deploymentTime,
+                //myedit ******
+                environemnt:data.responseBody.environment,
+                layer:data.responseBody.layer,
+                defectId:data.responseBody.defectId,
+                assignOnGroup:data.responseBody.assignOnGroup,
+                requestDate:data.responseBody.requestDate,
+                reason:data.responseBody.reason,
+                releaseNote:data.responseBody.releaseNote,
+                affectedService:data.responseBody.affectedService,
                 deploymentComment: '',
                 serviceVersion:'',
                 status: this.selectedStatus,
