@@ -125,10 +125,14 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	 */
 	@Override
 	public DeploymentRequest updateDeploymentStatus(String deploymentRequestId, String newStatus, Date deploymentTime) {
+		System.err.println(deploymentRequestId);
 		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentRequestId);
+		System.err.println("after------------'");
 		enrichDeploymentRequest(deploymentReqToUpdated, newStatus, deploymentTime);
 		//APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
 				//INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
+		System.err.println("before save----'");
+		System.err.println(deploymentReqToUpdated.toString());
 		return mongoTemplate.save(deploymentReqToUpdated);
 	}
 
@@ -186,13 +190,20 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 				, fromUser = Req.getInitiatorUser();
 		Users pickedBy = Req.getPickedByUser();
 		String currentStatus = Req.getStatus();
+		System.err.println("currentStatus------------'" +currentStatus);
+		System.err.println("pickedBy------------'" +pickedBy);
+		System.err.println("intitiator------------'" +intitiator);
 		if (checkStatus(currentStatus, newStatus)) {
 			Req.setStatus(newStatus);
 			if (newStatus.equals(String.valueOf(StatusCode.PENDING_APPROVAL))
 					||newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))
+					||newStatus.equals(String.valueOf(StatusCode.PENDING_CANCEL))
 					||newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
+				System.err.println("inside if condition");
 				fromUser = Req.getAssignOnUser();
+				System.err.println("fromUser ----" +fromUser);
 				Req.setAssignOnUser(pickedBy);
+				
 				
 			} else if (
 					newStatus.equals(String.valueOf(StatusCode.APPROVED))
@@ -202,15 +213,17 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			 else if (newStatus.equals(String.valueOf(StatusCode.COMPLETED))
 					 ||newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
+					 ||newStatus.equals(String.valueOf(StatusCode.CANCELED))
 					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))) {
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(intitiator);
 			 }
 			
 			Req.setDeploymentTime(deploymentTime);
-			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(), getMailSubject(Req));
+			System.err.println("after setting deployment time");
+			//APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(), getMailSubject(Req));
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
-			
+			System.err.println(Req.getAssignOnGroup());
 		}
 	}
 
@@ -243,6 +256,12 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			break;
 		case "POST_PONED":
 			group = "DEPLOYMENT";
+			break;
+		case "CANCELED":
+			group = "DEVELOPMENT";
+			break;
+		case "PENDING_CANCEL":
+			group = "TESTING";
 			break;
 		}
 		return group;

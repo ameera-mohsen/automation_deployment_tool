@@ -19,7 +19,7 @@ export class EditRequestComponent implements OnInit {
     //deploymentReqId: String;
 
     allRequestBody: ResponseBody[];
-    resBody = {} as ResponseBody;
+  resBody = {} as ResponseBody;
     resStatus = {} as ResponseStatus;
     editForm: FormGroup;
     requestInfo: RequestInfo[];
@@ -140,6 +140,8 @@ export class EditRequestComponent implements OnInit {
         this.buildRequest();
         //console.log('blablablaaaaaaaa' + this.resBody.reason);
         //this.searchService.updateRequestObj(this.resBody)
+        console.log(this.resBody.id);
+        console.log(this.resBody.status);
         this.searchService.updateRequest(this.resBody.id,this.resBody.status)
           .subscribe(
             (data: Request) => {

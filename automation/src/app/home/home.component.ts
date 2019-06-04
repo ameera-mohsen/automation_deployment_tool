@@ -21,6 +21,7 @@ import { ResponseStatus } from '../_models/responseStatus';
 import { HttpParamsOptions } from '@angular/common/http/src/params';
 import { Subscription } from 'rxjs';
 import { UserCredentialsResBody } from '../_models/userCredentialsResBody';
+import { RequestInfo} from '../_models';
 
 @Component({
     selector: 'home',
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
 
     @Input() count = 0;
     @Output() countChange = new EventEmitter<number>();
-
+    
 
     increment() {
         this.count++;
@@ -43,7 +44,8 @@ export class HomeComponent implements OnInit {
     displayName: string;
     email: string;
     group : string;
-
+    requestInfo: RequestInfo[];
+    reqInfo = {} as RequestInfo;
     currentUser: User;
     allRequestBody: ResponseBody[];
     resBody = {} as ResponseBody;
@@ -64,7 +66,7 @@ export class HomeComponent implements OnInit {
     options: HttpParamsOptions = {} as HttpParamsOptions
     constructor( private router: Router, private userService: UserService, private layerService: LayersService,
         private statusService: StatusService, private serviceListService: ServiceListService,
-        private environmentService: EnvironmentService, private searchService: SearchService) {
+        private environmentService: EnvironmentService, private searchService: SearchService ) {
        // this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     }
@@ -181,4 +183,8 @@ export class HomeComponent implements OnInit {
         this.router.navigate(['edit']);
 
     }
+    
+    
+
+     
 }

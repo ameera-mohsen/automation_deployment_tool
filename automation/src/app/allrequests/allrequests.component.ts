@@ -5,6 +5,8 @@ import { ResponseStatus } from '../_models/responseStatus';
 import { UserService, SearchService } from '../_services';
 import { Request } from '../_models';
 import { Router } from '@angular/router';
+import { DialogComponent } from '../dialog/dialog.component';
+import { RequestInfo} from '../_models';
 
 @Component({
   selector: 'app-allrequests',
@@ -16,6 +18,7 @@ export class AllrequestsComponent implements OnInit {
   id: string;
     displayName: string;
     email: string;
+    group: string;
 
   public searchString: string;
   public defectsearchString: string;
@@ -23,6 +26,8 @@ export class AllrequestsComponent implements OnInit {
   allRequestBody: ResponseBody[];
   resBody = {} as ResponseBody;
   resStatus = {} as ResponseStatus;
+  requestInfo: RequestInfo[];
+  reqInfo = {} as RequestInfo;
 
   constructor(private router: Router, private userService: UserService, private searchService: SearchService) {
   }
@@ -59,5 +64,50 @@ export class AllrequestsComponent implements OnInit {
       this.allRequestBody = data.responseBody;
       // console.log(' <<<<<< loadAllDeployments.id  >>>>>> ' + this.resBody.id );
     });
+  }
+
+  cancelRequest(req: ResponseBody): void{
+    if (req.status =='PENDING_CANCEL') {
+        req.status='CANCELED';
+    }else {
+        req.status='PENDING_CANCEL';  
+    }
+    
+    console.log(req.id);
+    this.buildRequest(req);
+    this.searchService.updateRequest(req.id.toString(),req.status)
+    .subscribe(
+      (data: Request) => {
+          console.log(data);
+        if(data.responseStatus.statusCode === 200) {
+          alert('Request updated successfully.');
+          this.router.navigate(['home']);
+        }else {
+          alert(data.responseStatus+ " will take you Home ");
+          this.router.navigate(['home']);
+        }
+      },
+      error => {
+        alert(error);
+      });
+
+}
+
+buildRequest(req: ResponseBody) {
+    // fill resBody with data from Form
+    this.resBody.status = req.status;
+    this.reqInfo.comment = 'cancel request';
+    this.requestInfo = [this.reqInfo];
+    this.resBody.requestInfo = this.requestInfo;
+    console.log(this.resBody);
+  }
+
+  show(req: ResponseBody){
+    this.group = window.localStorage.getItem("group");
+    console.log (this.group);
+    if((req.status !='COMPLETED' && req.status!='CANCELED' && req.status!='IN_PROGRESS' && req.status !='PENDING_CANCEL' && this.group == 'DEVELOPMENT') ||(req.status =='PENDING_CANCEL' && this.group == 'Testing') ) {
+      return true;
+    }
+    return false;
   }
 }

@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
+import { DialogComponent } from './dialog/dialog.component';
 // used to create fake backend
 import { fakeBackendProvider } from './_helpers';
 
@@ -22,6 +22,10 @@ import { EditRequestComponent } from './edit/edit.component';
 import { NewDeploymentComponent } from './new/new.component';
 import { ProgressSpinnerOverviewExample } from './common/progress-spinner-overview-example';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
 
 @NgModule({
     imports: [
@@ -30,10 +34,12 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
         HttpClientModule,
         routing,
         FormsModule,
+        BrowserAnimationsModule ,
         NgMultiSelectDropDownModule.forRoot()
     ],
     declarations: [
         AppComponent,
+        DialogComponent,
         AlertComponent,
         HomeComponent,
         NewDeploymentComponent,

@@ -13,6 +13,8 @@ public enum StatusCode {
 	COMPLETED,
 	CANCELED,
 	POST_PONED,
-	VALIDATED
+	VALIDATED,
+	PENDING_CANCEL,
+	
 
 }
