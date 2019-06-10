@@ -66,16 +66,19 @@ export class AllrequestsComponent implements OnInit {
     });
   }
 
-  cancelRequest(req: ResponseBody): void{
-    if (req.status =='PENDING_CANCEL') {
-        req.status='CANCELED';
+  cancelRequest2(req_id:number,req_status:string): void{
+    
+    window.localStorage.removeItem("viewReqId");
+    window.localStorage.setItem("viewReqId", req_id.toString());
+    if (req_status =='PENDING_CANCEL') {
+        req_status='CANCELED';
     }else {
-        req.status='PENDING_CANCEL';  
+        req_status='PENDING_CANCEL';  
     }
     
-    console.log(req.id);
-    this.buildRequest(req);
-    this.searchService.updateRequest(req.id.toString(),req.status)
+    console.log("req ID "+ req_id);
+   // this.buildRequest(req);
+    this.searchService.updateRequest(req_id.toString(),req_status)
     .subscribe(
       (data: Request) => {
           console.log(data);
@@ -92,7 +95,43 @@ export class AllrequestsComponent implements OnInit {
       });
 
 }
+setCancelReqParamters(req:ResponseBody):void{
+  window.localStorage.removeItem("viewReqId");
+  window.localStorage.setItem("viewReqId", req.id.toString());
+  window.localStorage.removeItem("ReqStatus");
+  window.localStorage.setItem("ReqStatus", req.status);
+}
 
+
+cancelRequest(): void{
+    
+ var req_status =   window.localStorage.getItem("ReqStatus");
+ var req_id = window.localStorage.getItem("viewReqId");
+  if (req_status =='PENDING_CANCEL') {
+      req_status='CANCELED';
+  }else {
+      req_status='PENDING_CANCEL';  
+  }
+  
+  console.log("req ID "+ req_id  + " req_status "+req_status);
+ // this.buildRequest(req);
+  this.searchService.updateRequest(req_id.toString(),req_status)
+  .subscribe(
+    (data: Request) => {
+        console.log(data);
+      if(data.responseStatus.statusCode === 200) {
+        alert('Request updated successfully.');
+        this.router.navigate(['home']);
+      }else {
+        alert(data.responseStatus+ " will take you Home ");
+        this.router.navigate(['home']);
+      }
+    },
+    error => {
+      alert(error);
+    });
+
+}
 buildRequest(req: ResponseBody) {
     // fill resBody with data from Form
     this.resBody.status = req.status;

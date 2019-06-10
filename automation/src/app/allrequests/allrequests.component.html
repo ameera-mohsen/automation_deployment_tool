@@ -83,16 +83,17 @@
             <td>{{req.requestDate}}</td>
             <td>{{req.deploymentTime}}</td>
             <td><button class="btn btn-success" (click)="reqDetails(req)" style="margin-left: 20px;"> Details</button></td>
-            <td> <button  *ngIf="show(req)" (click)="showDialog = !showDialog" class="btn  btn-danger">Cancel Request</button>
-              <app-dialog [(visible)]="showDialog">
-              <h2>are you sure you want to cancel request ?</h2>
-              <table >
-                  <tr > 
-                    <td><button  class="btn  btn-primary  btn-success" (click)="cancelRequest(req) ; showDialog = !showDialog">Yes</button></td>
-                    <td><button  (click)="showDialog = !showDialog" class="btn btn-primary btn-success">No</button></td>
-                  </tr>
-              </table>
-            </app-dialog></td>
+            <td> 
+              <button  *ngIf="show(req)" (click)="showDialog = !showDialog ; setCancelReqParamters(req)" class="btn  btn-danger">Cancel Request</button> 
+            </td>
+            <td>  <app-dialog [(visible)]="showDialog">
+              <h3>Are you sure you want to cancel request ?</h3>
+            <br><br>
+           <button  class="btn  btn-primary  btn-success" (click)="cancelRequest() ; showDialog = !showDialog">Yes</button>
+           &nbsp;&nbsp;
+           <button  (click)="showDialog = !showDialog" class="btn btn-primary btn-success" >No</button>                     
+            </app-dialog>
+          </td>
           </tr>
         </tbody>
       </table>

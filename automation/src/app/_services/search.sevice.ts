@@ -27,6 +27,7 @@ export class SearchService {
     }
 
     updateRequest(reqId: String, newStatus: string): Observable<any> {
+      // var myDate ='2019-12-1-12:20:11';
         return this.http.put('http://localhost:8086/api/UpdateDeploymentRequestStatus/' + reqId + '/' + newStatus,
             {
                 headers: new HttpHeaders()
@@ -36,6 +37,31 @@ export class SearchService {
                     .append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT, PATCH')
                     .append('Access-Control-Allow-Headers', "X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding")
             });
+    }
+
+    getNowDate() {
+        //return string
+        var returnDate = "";
+        //get datetime now
+        var today = new Date();
+        //split
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //because January is 0! 
+        var yyyy = today.getFullYear();
+        //Interpolation date
+        if (dd < 10) {
+            returnDate += `0${dd}.`;
+        } else {
+            returnDate += `${dd}.`;
+        }
+    
+        if (mm < 10) {
+            returnDate += `0${mm}.`;
+        } else {
+            returnDate += `${mm}.`;
+        }
+        returnDate += yyyy;
+        return returnDate;
     }
 
     getAllRequests(): Observable<any> {
