@@ -104,7 +104,7 @@ export class EditRequestComponent implements OnInit {
                 releaseNote:data.responseBody.releaseNote,
                 affectedService:data.responseBody.affectedService,
                 deploymentComment: '',
-                serviceVersion:'',
+                serviceVersion:data.responseBody.serviceVersion,
                 status: this.selectedStatus,
             });
             this.resBody= data.responseBody;

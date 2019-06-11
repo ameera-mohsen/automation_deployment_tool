@@ -43,7 +43,9 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			String[] list = new String[2];
 			list[0] = assignOnUserEmail;
 			list[1] = pickedByUserEmail;
-			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(), getMailSubject(deploymentRequest));
+			String deploymentSubject = getMailSubject(deploymentRequest);
+			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(), deploymentSubject);
+			deploymentRequest.setRequestSubject(deploymentSubject);
 			return mongoTemplate.insert(deploymentRequest);
 		}
 		return null;

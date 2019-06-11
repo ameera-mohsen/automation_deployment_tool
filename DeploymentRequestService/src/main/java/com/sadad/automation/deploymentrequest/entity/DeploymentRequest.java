@@ -42,6 +42,8 @@ public class DeploymentRequest {
 	private Users assignOnUser;
 	@Field("pickedByUser")
 	private Users pickedByUser;
+	@Field("RequestSubject")
+	private String requestSubject;
 
 	public Users getPickedByUser() {
 		return pickedByUser;
@@ -161,6 +163,14 @@ public class DeploymentRequest {
 
 	public void setDeploymentTime(Date deploymentTime) {
 		this.deploymentTime = deploymentTime;
+	}
+	
+	public String getRequestSubject() {
+		return requestSubject;
+	}
+
+	public void setRequestSubject(String requestSubject) {
+		this.requestSubject = requestSubject;
 	}
 	
 }
