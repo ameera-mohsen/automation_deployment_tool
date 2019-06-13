@@ -171,6 +171,5 @@ public class DeploymentRequest {
 
 	public void setRequestSubject(String requestSubject) {
 		this.requestSubject = requestSubject;
-	}
-	
+	}	
 }

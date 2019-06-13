@@ -1,5 +1,6 @@
 package com.sadad.automation.deploymentrequest.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
@@ -134,7 +135,19 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		//APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
 				//INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
 		System.err.println("before save----'");
-		System.err.println(deploymentReqToUpdated.toString());
+		return mongoTemplate.save(deploymentReqToUpdated);
+	}
+	
+	@Override
+	public DeploymentRequest updateDeploymentStatusCommentSubject(String deploymentReqId, String newStatus,
+			Date deploymentTime, String requestSubject) {
+		System.err.println(deploymentReqId);
+		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentReqId);
+		enrichDeploymentRequest(deploymentReqToUpdated, newStatus, deploymentTime);
+		//APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
+				//INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
+		System.err.println("before save----'");
+		deploymentReqToUpdated.setRequestSubject(requestSubject);	
 		return mongoTemplate.save(deploymentReqToUpdated);
 	}
 
