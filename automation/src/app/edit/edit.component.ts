@@ -38,10 +38,13 @@ export class EditRequestComponent implements OnInit {
     affectedService:string;
     displayName: string;
     email: string;
+    requestSubject: string;
 
     assignOnUser = {} as User;
     pickedByUser = {} as User;
     initiatorUser = {} as User;
+
+    isRequestSubjectDisabled:boolean;
 
     
     constructor(private formBuilder: FormBuilder,private authenticationService: AuthenticationService,private router: Router,public searchService: SearchService) { }
@@ -60,9 +63,7 @@ export class EditRequestComponent implements OnInit {
       this.id = window.localStorage.getItem("id");
       this.displayName = window.localStorage.getItem("displayName");
       this.email = window.localStorage.getItem("email");
-
-
-      
+      // this.isRequestSubjectDisabled = false;
         let reqId = window.localStorage.getItem("editReqId");
         if(!reqId) {
             alert("Invalid action.")
@@ -84,7 +85,7 @@ export class EditRequestComponent implements OnInit {
             affectedService:[''],
             deploymentTime: ['', Validators.required],
             deploymentComment: [''],
-            serviceVersion: [''],
+            requestSubject: [''],
             status: [this.status]
           });
           
@@ -105,18 +106,24 @@ export class EditRequestComponent implements OnInit {
                 releaseNote:data.responseBody.releaseNote,
                 affectedService:data.responseBody.affectedService,
                 deploymentComment: '',
-                serviceVersion:'',
-                status: this.selectedStatus,
+                // deploymentComment: data.responseBody.requestInfo.comment,              
+                requestSubject:data.responseBody.requestSubject,               
+                status: this.selectedStatus,           
             });
-            this.resBody= data.responseBody;
-          });
+            if (data.responseBody.assignOnGroup=="DEPLOYMENT") {
+              this.isRequestSubjectDisabled=false;
+            } else {
+              this.isRequestSubjectDisabled=true;
+            }
+            this.resBody= data.responseBody;          
+          });    
     }
 
     buildRequest() {
       // fill resBody with data from Form
       this.resBody.status = this.editForm.get('status').value;
       this.reqInfo.comment = this.editForm.get('deploymentComment').value;
-      this.reqInfo.version = this.editForm.get('serviceVersion').value;
+      this.resBody.requestSubject = this.editForm.get('requestSubject').value;
       this.requestInfo = [this.reqInfo];
       this.resBody.requestInfo = this.requestInfo;
     }
@@ -143,7 +150,10 @@ export class EditRequestComponent implements OnInit {
         //this.searchService.updateRequestObj(this.resBody)
         console.log(this.resBody.id);
         console.log(this.resBody.status);
-        this.searchService.updateRequest(this.resBody.id,this.resBody.status)
+        console.log("Subject is -- " + this.resBody.requestSubject);
+        console.log("comment is -- " + this.reqInfo.comment);
+        this.searchService.updateRequestData(this.resBody.id,this.resBody.status, this.resBody.requestSubject)
+        // this.searchService.updateRequest(this.resBody.id,this.resBody.status)
           .subscribe(
             (data: Request) => {
               if(data.responseStatus.statusCode === 200) {

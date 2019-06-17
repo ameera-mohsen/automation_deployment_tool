@@ -111,6 +111,16 @@ public class DeploymentRequestController {
 				" Deployment Status Updated and Assigned Successfully..");
 
 	}
+	
+	@PutMapping("/UpdateDeploymentRequestStatusSubject/{deploymentReqId}/{newStatus}/{requestSubject}")
+	public ResponseEntity<CustomResponse> updateDeploymentStatusCommentSubject(@PathVariable String deploymentReqId,
+			@PathVariable String newStatus, @PathVariable String requestSubject) {
+		DeploymentRequest deploymentRequest = deploymentRequestService.updateDeploymentStatusCommentSubject(deploymentReqId, newStatus, 
+				new Date(), requestSubject);
+		return deploymentRequestService.buildSuccessResponse(deploymentRequest,
+				" Deployment Status Updated and Assigned Successfully..");
+
+	}
 
 	@PutMapping("/addRequestInfo/{deploymentReqId}/{newStatus}")
 	public ResponseEntity<CustomResponse> addToDeploymentRequestRequestInfo(@PathVariable String deploymentReqId,

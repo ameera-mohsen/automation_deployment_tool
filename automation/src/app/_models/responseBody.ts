@@ -12,6 +12,7 @@ export interface ResponseBody {
     deploymentTime: Date;
     reason: string;
     releaseNote: string;
+    requestSubject: string;
     layer: string[];
     affectedService: string[];
     requestInfo: RequestInfo[];

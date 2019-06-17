@@ -118,6 +118,12 @@
                   </div>
 
                 <div class="form-group">
+                    <label for="requestSubject">Version:</label>
+                    <input formControlName="requestSubject" name="requestSubject"
+                        class="form-control" id="requestSubject" [readonly]="this.isRequestSubjectDisabled">
+                </div>
+
+                <div class="form-group">
                     <label for="status">New Status:</label>
                     <select formControlName="status" placeholder="status Time" name="status" class="form-control"
                         id="status">
@@ -125,11 +131,7 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="serviceVersion">Version:</label>
-                    <input formControlName="serviceVersion" name="serviceVersion"
-                        class="form-control" id="serviceVersion">
-                </div>
+                
 
                 <div class="form-group">
                     <label for="comment">Comment:</label>

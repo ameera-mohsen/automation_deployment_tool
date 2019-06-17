@@ -75,6 +75,8 @@ export class NewDeploymentComponent implements OnInit {
   selectedItems = [];
   dropdownSettings = {};
 
+  submitted=false;
+
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private layerService: LayersService,
     private statusService: StatusService, private serviceListService: ServiceListService,
     private environmentService: EnvironmentService,private authenticationService: AuthenticationService, private searchService: SearchService) {
@@ -106,6 +108,7 @@ export class NewDeploymentComponent implements OnInit {
     //this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-US', '+0530');
     this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
     this.newForm = this.formBuilder.group({
+   
       Environment: [this.environment.values, Validators.required],
       Layers: [this.selectedLayer, Validators.required],
       status: ['NEW'],
@@ -115,7 +118,7 @@ export class NewDeploymentComponent implements OnInit {
       deploymentTime: [this.jstoday, Validators.required],
       reason: [this.reason, Validators.required],
       releaseNote: [this.releaseNote, Validators.required],
-    affectedService: [this.selectedAffectedService, Validators.required],
+    affectedService: ['', Validators.required],
     });
 
     this.dropdownList = [
@@ -166,7 +169,13 @@ export class NewDeploymentComponent implements OnInit {
   }
 
   onSubmit() {
+    this.submitted=true;
     this.buildRequestJson();
+
+    if (this.newForm.invalid) {
+      return;
+  }
+
     this.searchService.newRequest(this.resBody).
       subscribe(
         (data: Request) => {
@@ -184,7 +193,7 @@ export class NewDeploymentComponent implements OnInit {
         });
   }
 
-
+  get f() { return this.newForm.controls; }
 
 
   getCheckBox() {
