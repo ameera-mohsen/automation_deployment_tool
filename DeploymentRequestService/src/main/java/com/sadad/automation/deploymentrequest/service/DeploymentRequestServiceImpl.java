@@ -3,6 +3,7 @@ package com.sadad.automation.deploymentrequest.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -292,12 +293,20 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	@Override
 	public List<DeploymentRequest> searchDeploymentRequestByCriteria(MultiValueMap<String,String> searchCriteria) {
 		Query query = new Query();
+		
 		 for (Entry<String, List<String>> entry : searchCriteria.entrySet()) {
+			 System.out.println("entry:----------" + entry);
 			 if(entry.getKey().equals("requestDateFrom")) {
 				 query.addCriteria(Criteria.where("requestDate").gte(entry.getValue()).lt(searchCriteria.get("requestDateTo")));
 			 }else if (entry.getKey().equals("requestDateTo")) {
 				continue;
-			 }else {
+			 }
+			 else if (entry.getKey().equals("initiatorUser.displayName")) {
+				 System.out.println("print here :----------");
+				 query.addCriteria(Criteria.where(entry.getKey()).regex(entry.getValue().toString(), "i"));
+				 
+				 }
+			 else {
 				 query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));  
 			 }
 		 }

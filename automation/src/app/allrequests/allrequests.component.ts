@@ -7,6 +7,7 @@ import { Request } from '../_models';
 import { Router } from '@angular/router';
 import { DialogComponent } from '../dialog/dialog.component';
 import { RequestInfo} from '../_models';
+import {  AuthenticationService} from '../_services';
 
 @Component({
   selector: 'app-allrequests',
@@ -22,14 +23,13 @@ export class AllrequestsComponent implements OnInit {
 
   public searchString: string;
   public defectsearchString: string;
-
   allRequestBody: ResponseBody[];
   resBody = {} as ResponseBody;
   resStatus = {} as ResponseStatus;
   requestInfo: RequestInfo[];
   reqInfo = {} as RequestInfo;
 
-  constructor(private router: Router, private userService: UserService, private searchService: SearchService) {
+  constructor(private router: Router, private authenticationService: AuthenticationService, private userService: UserService, private searchService: SearchService) {
   }
 
 
@@ -37,7 +37,7 @@ export class AllrequestsComponent implements OnInit {
     let userData = window.localStorage.getItem("user");
       if(!userData) {
           console.log("Loggedin User :  "  + userData);
-          alert("Invalid action. User is Not loggedIn")
+          //alert("Invalid action. User is Not loggedIn")
           this.router.navigate(['login']);
           return;
       }
@@ -66,19 +66,15 @@ export class AllrequestsComponent implements OnInit {
     });
   }
 
-  cancelRequest2(req_id:number,req_status:string): void{
-    
-    window.localStorage.removeItem("viewReqId");
-    window.localStorage.setItem("viewReqId", req_id.toString());
-    if (req_status =='PENDING_CANCEL') {
-        req_status='CANCELED';
+  cancelRequest(req: ResponseBody): void{
+    if (req.status =='PENDING_CANCEL') {
+        req.status='CANCELED';
     }else {
-        req_status='PENDING_CANCEL';  
+        req.status='PENDING_CANCEL';  
     }
     
-    console.log("req ID "+ req_id);
-   // this.buildRequest(req);
-    this.searchService.updateRequest(req_id.toString(),req_status)
+    console.log(req.id);
+    this.searchService.updateRequest(req.id.toString(),req.status)
     .subscribe(
       (data: Request) => {
           console.log(data);
@@ -95,51 +91,7 @@ export class AllrequestsComponent implements OnInit {
       });
 
 }
-setCancelReqParamters(req:ResponseBody):void{
-  window.localStorage.removeItem("viewReqId");
-  window.localStorage.setItem("viewReqId", req.id.toString());
-  window.localStorage.removeItem("ReqStatus");
-  window.localStorage.setItem("ReqStatus", req.status);
-}
 
-
-cancelRequest(): void{
-    
- var req_status =   window.localStorage.getItem("ReqStatus");
- var req_id = window.localStorage.getItem("viewReqId");
-  if (req_status =='PENDING_CANCEL') {
-      req_status='CANCELED';
-  }else {
-      req_status='PENDING_CANCEL';  
-  }
-  
-  console.log("req ID "+ req_id  + " req_status "+req_status);
- // this.buildRequest(req);
-  this.searchService.updateRequest(req_id.toString(),req_status)
-  .subscribe(
-    (data: Request) => {
-        console.log(data);
-      if(data.responseStatus.statusCode === 200) {
-        alert('Request updated successfully.');
-        this.router.navigate(['home']);
-      }else {
-        alert(data.responseStatus+ " will take you Home ");
-        this.router.navigate(['home']);
-      }
-    },
-    error => {
-      alert(error);
-    });
-
-}
-buildRequest(req: ResponseBody) {
-    // fill resBody with data from Form
-    this.resBody.status = req.status;
-    this.reqInfo.comment = 'cancel request';
-    this.requestInfo = [this.reqInfo];
-    this.resBody.requestInfo = this.requestInfo;
-    console.log(this.resBody);
-  }
 
   show(req: ResponseBody){
     this.group = window.localStorage.getItem("group");
@@ -149,4 +101,11 @@ buildRequest(req: ResponseBody) {
     }
     return false;
   }
+  logout() {
+    // remove user from local storage to log user out
+    //this.router.navigate(['login']);
+    this.authenticationService.logout();
+    
+   
+}
 }
