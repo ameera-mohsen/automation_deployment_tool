@@ -237,7 +237,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			
 			Req.setDeploymentTime(deploymentTime);
 			System.err.println("after setting deployment time");
-			//APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(), getMailSubject(Req));
+			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(), getMailSubject(Req));
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
 			System.err.println(Req.getAssignOnGroup());
 		}

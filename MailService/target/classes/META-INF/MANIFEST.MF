@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-Implementation-Title: DeploymentRequestService
+Implementation-Title: MailService
 Implementation-Version: 0.0.1-SNAPSHOT
 Built-By: afawzy2
-Implementation-Vendor-Id: com.sadad.automation.deploymentrequest
+Implementation-Vendor-Id: com.dxc.automation
 Build-Jdk: 1.8.0_201
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
- ot-starter-parent/DeploymentRequestService
+ ot-starter-parent/MailService
 Created-By: Maven Integration for Eclipse
 
