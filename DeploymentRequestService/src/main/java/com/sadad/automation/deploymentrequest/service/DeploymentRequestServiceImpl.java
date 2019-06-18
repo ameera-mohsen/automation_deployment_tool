@@ -352,14 +352,6 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
         DBObject res = collection.findAndModify(query, new BasicDBObject(), new BasicDBObject(), false, update, true,
             true);
         System.err.println("after find" );
-//		BasicDBObject update = new BasicDBObject();
-//		 System.err.println("before inc" );
-//		update.put("$inc", new BasicDBObject("sequence_value", 1));
-//		System.err.println("after  inc");
-//		DBObject obj = collection.findAndModify(query, update);
-//		System.err.println(obj);
-//		System.err.println(obj.get("sequence_value"));
-//		return obj.get("sequence_value");
         System.err.println(res);
         return res.get("sequence_value").toString();
 	}
