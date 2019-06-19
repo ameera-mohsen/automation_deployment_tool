@@ -4,13 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Document(collection = "DeploymentRequest")
 public class DeploymentRequest {
-
+	
 	@Id
 	private String id;
 	@Field("Status")

@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import { Request, RequestInfo, User } from '../_models';
+import {  AuthenticationService} from '../_services';
 
 @Component({
     selector: 'editrequests',
@@ -46,7 +47,7 @@ export class EditRequestComponent implements OnInit {
     isRequestSubjectDisabled:boolean;
 
     
-    constructor(private formBuilder: FormBuilder,private router: Router,public searchService: SearchService) { }
+    constructor(private formBuilder: FormBuilder,private authenticationService: AuthenticationService,private router: Router,public searchService: SearchService) { }
 
   
 
@@ -55,7 +56,7 @@ export class EditRequestComponent implements OnInit {
       let userData = window.localStorage.getItem("user");
       if(!userData) {
           //console.log("Loggedin User :  "  + userData);
-          alert("Invalid action. User is Not loggedIn")
+         // alert("Invalid action. User is Not loggedIn")
           this.router.navigate(['login']);
           return;
       }
@@ -167,5 +168,14 @@ export class EditRequestComponent implements OnInit {
               alert(error);
             });
       }
+      logout() {
+        // remove user from local storage to log user out
+        // this.router.navigate(['login']);
+        // localStorage.removeItem('user');
+        this.authenticationService.logout();
+    
+       
+    }
+      
 
 }

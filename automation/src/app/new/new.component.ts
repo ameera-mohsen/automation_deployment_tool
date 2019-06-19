@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User, Layer, Status, Service, Environment } from '../_models';
 import { ResponseBody } from '../_models/responseBody';
 import { ResponseStatus } from '../_models/responseStatus';
-import { UserService, SearchService, StatusService, EnvironmentService, ServiceListService, LayersService } from '../_services';
+import { UserService, SearchService, StatusService,AuthenticationService, EnvironmentService, ServiceListService, LayersService } from '../_services';
 import { Request } from '../_models';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
@@ -79,7 +79,7 @@ export class NewDeploymentComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private layerService: LayersService,
     private statusService: StatusService, private serviceListService: ServiceListService,
-    private environmentService: EnvironmentService, private searchService: SearchService) {
+    private environmentService: EnvironmentService,private authenticationService: AuthenticationService, private searchService: SearchService) {
   }
 
   ngOnInit() {
@@ -263,5 +263,12 @@ export class NewDeploymentComponent implements OnInit {
     this.marked = e.target.checked;
 
   }
+  logout() {
+    // remove user from local storage to log user out
+    // this.router.navigate(['login']);
+    // localStorage.removeItem('user');
+    
+    this.authenticationService.logout();
+}
 
 }

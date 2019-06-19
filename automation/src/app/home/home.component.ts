@@ -9,7 +9,7 @@ import { Service } from '../_models';
 import { Environment } from '../_models';
 import { Request } from '../_models';
 import { LayersService } from '../_services';
-import { StatusService } from '../_services';
+import { StatusService , AuthenticationService} from '../_services';
 import { ServiceListService } from '../_services';
 import { EnvironmentService } from '../_services';
 import { SearchService } from '../_services';
@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
     options: HttpParamsOptions = {} as HttpParamsOptions
     constructor( private router: Router, private userService: UserService, private layerService: LayersService,
         private statusService: StatusService, private serviceListService: ServiceListService,
-        private environmentService: EnvironmentService, private searchService: SearchService ) {
+        private environmentService: EnvironmentService,private authenticationService: AuthenticationService, private searchService: SearchService ) {
        // this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     }
@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit {
         let userData = window.localStorage.getItem("user");
         if(!userData) {
             console.log("Loggedin User :  "  + userData);
-            alert("Invalid action. User is Not loggedIn")
+            //alert("Invalid action. User is Not loggedIn")
             this.router.navigate(['login']);
             return;
         }
@@ -86,9 +86,7 @@ export class HomeComponent implements OnInit {
         this.displayName = window.localStorage.getItem("displayName");
         this.email = window.localStorage.getItem("email");
         this.group = window.localStorage.getItem("group");
-
-
-        
+ 
         this.loadLayers();
         this.loadStatuses();
         this.loadServices();
@@ -125,6 +123,7 @@ export class HomeComponent implements OnInit {
 
     private loadServices() {
         this.serviceListService.getAll().pipe(first()).subscribe(services => {
+            console.log('search --------------------------');
             this.services = services;
         });
     }
@@ -142,6 +141,7 @@ export class HomeComponent implements OnInit {
         console.log('Search Request..');
         
         console.log(this.requestNumber);
+
         if (this.selectedLayer) {
             params = params.append('Layer', this.selectedLayer);
         }
@@ -154,6 +154,15 @@ export class HomeComponent implements OnInit {
         if (this.selectedStatus) {
             params = params.append('Status', this.selectedStatus);
         }
+        if (this.requestNumber) {
+            params = params.append('id', this.requestNumber);
+        }
+        console.log('requestOwner -----:: >> ' +this.requestOwner);
+        if (this.requestOwner) {
+            params = params.append('initiatorUser.displayName', this.requestOwner);
+        }
+        
+        
         console.log('Search Request.. Parameters:: >> ' + params.getAll);
 
         this.searchService.searchRequestsByCriteria(params).subscribe((data: Request) => {
@@ -183,8 +192,13 @@ export class HomeComponent implements OnInit {
         this.router.navigate(['edit']);
 
     }
-    
-    
+    logout() {
+        // remove user from local storage to log user out
+        // this.router.navigate(['login']);
+        // localStorage.removeItem('user');
+        this.authenticationService.logout();
+       
+    }
 
-     
+  
 }

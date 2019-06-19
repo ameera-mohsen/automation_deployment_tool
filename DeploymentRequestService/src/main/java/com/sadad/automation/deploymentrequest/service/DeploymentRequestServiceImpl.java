@@ -1,6 +1,5 @@
 package com.sadad.automation.deploymentrequest.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
@@ -13,6 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
 import com.sadad.automation.deploymentrequest.common.APICaller;
 import com.sadad.automation.deploymentrequest.common.CustomResponse;
 import com.sadad.automation.deploymentrequest.common.DeploymentReqException;
@@ -34,23 +38,31 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
-		if(deploymentRequest != null ) {
-			String assignOnUserEmail = "" , pickedByUserEmail= "";
-			if(deploymentRequest.getAssignOnUser()!=null) {
-				 assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
-			}if(deploymentRequest.getPickedByUser()!=null) {
-				 pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
+
+		if (deploymentRequest != null) {
+			String assignOnUserEmail = "", pickedByUserEmail = "";
+			if (deploymentRequest.getAssignOnUser() != null) {
+				assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
+			}
+			if (deploymentRequest.getPickedByUser() != null) {
+				pickedByUserEmail = deploymentRequest.getPickedByUser().getEmail();
 			}
 			String[] list = new String[2];
 			list[0] = assignOnUserEmail;
 			list[1] = pickedByUserEmail;
+
 			String deploymentSubject = initMailSubject(deploymentRequest);
 			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(), deploymentSubject);
+
 			deploymentRequest.setRequestSubject(deploymentSubject);
+			String id;
+			id = (String) getNextSequence("requestid");
+			deploymentRequest.setId(id);
 			return mongoTemplate.insert(deploymentRequest);
 		}
 		return null;
 	}
+
 	
 	private String initMailSubject(DeploymentRequest deploymentRequest) {
 		if(deploymentRequest.getRequestSubject().equals("")) {
@@ -66,9 +78,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		else {
 			return deploymentRequest.getRequestSubject();
 		}
-		
 	}
-
 	@Override
 	public DeploymentRequest updateDeploymentRequest(DeploymentRequest deploymentRequest) {
 		return mongoTemplate.save(deploymentRequest);
@@ -138,12 +148,12 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentRequestId);
 		System.err.println("after------------'");
 		enrichDeploymentRequest(deploymentReqToUpdated, newStatus, deploymentTime);
-		//APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
-				//INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
+		// APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
+		// INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
 		System.err.println("before save----'");
 		return mongoTemplate.save(deploymentReqToUpdated);
 	}
-	
+
 	@Override
 	public DeploymentRequest updateDeploymentStatusCommentSubject(String deploymentReqId, String newStatus,
 			Date deploymentTime, String requestSubject) {
@@ -155,6 +165,10 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		System.err.println("before save----'");
 		deploymentReqToUpdated.setRequestSubject(requestSubject);
 		APICaller.EmailAPI(deploymentReqToUpdated.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + deploymentReqToUpdated.getInitiatorUser().getDisplayName(), requestSubject);
+		// APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
+		// INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
+		System.err.println("before save----'");
+		deploymentReqToUpdated.setRequestSubject(requestSubject);
 		return mongoTemplate.save(deploymentReqToUpdated);
 	}
 
@@ -208,42 +222,39 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	}
 
 	private void enrichDeploymentRequest(DeploymentRequest Req, String newStatus, Date deploymentTime) {
-		Users intitiator = Req.getInitiatorUser()
-				, fromUser = Req.getInitiatorUser();
+		Users intitiator = Req.getInitiatorUser(), fromUser = Req.getInitiatorUser();
 		Users pickedBy = Req.getPickedByUser();
 		String currentStatus = Req.getStatus();
-		System.err.println("currentStatus------------'" +currentStatus);
-		System.err.println("pickedBy------------'" +pickedBy);
-		System.err.println("intitiator------------'" +intitiator);
+		System.err.println("currentStatus------------'" + currentStatus);
+		System.err.println("pickedBy------------'" + pickedBy);
+		System.err.println("intitiator------------'" + intitiator);
 		if (checkStatus(currentStatus, newStatus)) {
 			Req.setStatus(newStatus);
 			if (newStatus.equals(String.valueOf(StatusCode.PENDING_APPROVAL))
-					||newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))
-					||newStatus.equals(String.valueOf(StatusCode.PENDING_CANCEL))
-					||newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
+					|| newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))
+					|| newStatus.equals(String.valueOf(StatusCode.PENDING_CANCEL))
+					|| newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
 				System.err.println("inside if condition");
 				fromUser = Req.getAssignOnUser();
-				System.err.println("fromUser ----" +fromUser);
+				System.err.println("fromUser ----" + fromUser);
 				Req.setAssignOnUser(pickedBy);
-				
-				
-			} else if (
-					newStatus.equals(String.valueOf(StatusCode.APPROVED))
+
+			} else if (newStatus.equals(String.valueOf(StatusCode.APPROVED))
 					|| newStatus.equals(String.valueOf(StatusCode.IN_PROGRESS))) {
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(APICaller.UserAPI());
-			}
-			 else if (newStatus.equals(String.valueOf(StatusCode.COMPLETED))
-					 ||newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
-					 ||newStatus.equals(String.valueOf(StatusCode.CANCELED))
+			} else if (newStatus.equals(String.valueOf(StatusCode.COMPLETED))
+					|| newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
+					|| newStatus.equals(String.valueOf(StatusCode.CANCELED))
 					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))) {
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(intitiator);
-			 }
-			
+			}
+
 			Req.setDeploymentTime(deploymentTime);
 			System.err.println("after setting deployment time");
-			//APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(), getMailSubject(Req));
+			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(),
+					initMailSubject(Req));
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
 			System.err.println(Req.getAssignOnGroup());
 		}
@@ -309,23 +320,51 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	public ResponseEntity<CustomResponse> buildSuccessResponse(String requestId, String msg) {
 		return new ResponseEntity<CustomResponse>(new CustomResponse(new Status(200, msg), requestId), HttpStatus.OK);
 	}
-	
-	
+
 	@Override
-	public List<DeploymentRequest> searchDeploymentRequestByCriteria(MultiValueMap<String,String> searchCriteria) {
+	public List<DeploymentRequest> searchDeploymentRequestByCriteria(MultiValueMap<String, String> searchCriteria) {
 		Query query = new Query();
-		 for (Entry<String, List<String>> entry : searchCriteria.entrySet()) {
-			 if(entry.getKey().equals("requestDateFrom")) {
-				 query.addCriteria(Criteria.where("requestDate").gte(entry.getValue()).lt(searchCriteria.get("requestDateTo")));
-			 }else if (entry.getKey().equals("requestDateTo")) {
+
+		for (Entry<String, List<String>> entry : searchCriteria.entrySet()) {
+			System.out.println("entry:----------" + entry);
+			if (entry.getKey().equals("requestDateFrom")) {
+				query.addCriteria(
+						Criteria.where("requestDate").gte(entry.getValue()).lt(searchCriteria.get("requestDateTo")));
+			} else if (entry.getKey().equals("requestDateTo")) {
 				continue;
-			 }else {
-				 query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));  
-			 }
-		 }
-		 System.out.println("query:" + query);
-		 List<DeploymentRequest> deploymentRequestList = mongoTemplate.find(query, DeploymentRequest.class);
+			} else if (entry.getKey().equals("initiatorUser.displayName")) {
+				System.out.println("print here :----------");
+				query.addCriteria(Criteria.where(entry.getKey()).regex(entry.getValue().toString(), "i"));
+
+			} else {
+				query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));
+			}
+		}
+		System.out.println("query:" + query);
+		List<DeploymentRequest> deploymentRequestList = mongoTemplate.find(query, DeploymentRequest.class);
 		return deploymentRequestList;
+	}
+
+	public Object getNextSequence(String name) {
+		System.err.println("here  ----" );
+		MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+		System.err.println("client created -----" );
+	    // Now connect to your databases
+	    DB db = mongoClient.getDB("automationprocess");
+	    System.err.println("db    -----" );
+	    DBCollection collection = db.getCollection("DatabaseSequence");
+	    System.err.println("after getting collection -----" );
+	    DBObject query = new BasicDBObject();
+	    query.put("_id", name);
+	    System.err.println("before inc" );
+	    DBObject change = new BasicDBObject("sequence_value", 1);
+        DBObject update = new BasicDBObject("$inc", change);
+        System.err.println("before find" );
+        DBObject res = collection.findAndModify(query, new BasicDBObject(), new BasicDBObject(), false, update, true,
+            true);
+        System.err.println("after find" );
+        System.err.println(res);
+        return res.get("sequence_value").toString();
 	}
 
 }
