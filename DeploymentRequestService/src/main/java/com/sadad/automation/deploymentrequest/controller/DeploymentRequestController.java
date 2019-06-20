@@ -69,6 +69,7 @@ public class DeploymentRequestController {
 
 	@PostMapping("/addDeploymentRequest")
 	private ResponseEntity<CustomResponse> addDeploymentRequest(@RequestBody DeploymentRequest deploymentRequest) {
+		System.err.println("In addDeploymentRequest --- ");
 		DeploymentRequest request = deploymentRequestService.addDeploymentRequest(deploymentRequest);
 		return deploymentRequestService.buildSuccessResponse(request,
 				" Deployment Request Created and Assigned Successfully..");
@@ -80,7 +81,7 @@ public class DeploymentRequestController {
 		DeploymentRequest request = deploymentRequestService.updateDeploymentRequest(deploymentRequest);
 		return deploymentRequestService.buildSuccessResponse(request, " Deployment Request Updated Successfully..");
 	}
-
+	
 	// TODO
 	@PutMapping("/DeploymentRequestPicked/{deploymentReqId}")
 	public ResponseEntity<CustomResponse> deploymentRequestPicked(@PathVariable String deploymentReqId,
