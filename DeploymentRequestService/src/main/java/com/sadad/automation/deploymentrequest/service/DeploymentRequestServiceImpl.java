@@ -51,9 +51,10 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			String[] list = new String[2];
 			list[0] = assignOnUserEmail;
 			list[1] = pickedByUserEmail;
-			String deploymentSubject = getMailSubject(deploymentRequest);
-			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(),
-					deploymentSubject);
+
+			String deploymentSubject = initMailSubject(deploymentRequest);
+			APICaller.EmailAPIList(list, ASSIGNE_EMAIL_BODY + deploymentRequest.getInitiatorUser().getDisplayName(), deploymentSubject);
+
 			deploymentRequest.setRequestSubject(deploymentSubject);
 			String id;
 			id = (String) getNextSequence("requestid");
@@ -63,17 +64,22 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		return null;
 	}
 
-	private String getMailSubject(DeploymentRequest deploymentRequest) {
-		String affectedServices = "";
-		for (String str : deploymentRequest.getAffectedService()) {
-			affectedServices += "<" + str + ">";
+	
+	private String initMailSubject(DeploymentRequest deploymentRequest) {
+		if(deploymentRequest.getRequestSubject().equals("")) {
+			String affectedServices = "";
+			for (String str : deploymentRequest.getAffectedService()) {
+				affectedServices+="<" + str + ">";
+			}
+			System.err.println(affectedServices);
+			String mailSubject = "<S2>"+"<"+ deploymentRequest.getEnvironment() + ">" + affectedServices;
+			System.err.println(mailSubject);
+			return mailSubject;
 		}
-		System.err.println(affectedServices);
-		String mailSubject = "<S2>" + "<" + deploymentRequest.getEnvironment() + ">" + affectedServices;
-		System.err.println(mailSubject);
-		return mailSubject;
+		else {
+			return deploymentRequest.getRequestSubject();
+		}
 	}
-
 	@Override
 	public DeploymentRequest updateDeploymentRequest(DeploymentRequest deploymentRequest) {
 		return mongoTemplate.save(deploymentRequest);
@@ -125,7 +131,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			request.setPickedByUser(pickedByUser);
 			request.setAssignOnUser(pickedByUser);
 			APICaller.EmailAPI(request.getInitiatorUser().getEmail(),
-					INITIATOR_EMAIL_BODY + request.getAssignOnUser().getDisplayName(), getMailSubject(request));
+					INITIATOR_EMAIL_BODY + request.getAssignOnUser().getDisplayName(), initMailSubject(request));
 			return mongoTemplate.save(request);
 		} else {
 			throw new DeploymentReqException("Deployment Request " + deploymentReqId + " Not Found..");
@@ -155,6 +161,11 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		System.err.println(deploymentReqId);
 		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentReqId);
 		enrichDeploymentRequest(deploymentReqToUpdated, newStatus, deploymentTime);
+//		APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
+//				INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
+		System.err.println("before save----'");
+		deploymentReqToUpdated.setRequestSubject(requestSubject);
+		APICaller.EmailAPI(deploymentReqToUpdated.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + deploymentReqToUpdated.getInitiatorUser().getDisplayName(), requestSubject);
 		// APICaller.EmailAPI(deploymentReqToUpdated.getInitiatorUser().getEmail(),
 		// INFO_EMAIL_BODY + deploymentReqToUpdated.getStatus());
 		System.err.println("before save----'");
@@ -244,7 +255,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			Req.setDeploymentTime(deploymentTime);
 			System.err.println("after setting deployment time");
 			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(),
-					getMailSubject(Req));
+					initMailSubject(Req));
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
 			System.err.println(Req.getAssignOnGroup());
 		}
