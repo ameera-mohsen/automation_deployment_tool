@@ -3,6 +3,7 @@ package com.sadad.automation.deploymentrequest.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -347,7 +348,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 				continue;
 			} else if (entry.getKey().equals("initiatorUser.displayName")) {
 				System.out.println("print here :----------");
-				query.addCriteria(Criteria.where(entry.getKey()).regex(entry.getValue().toString(), "i"));
+				query.addCriteria(Criteria.where(entry.getKey()).regex("^"+entry.getValue().toString()));
 
 			} else {
 				query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));

@@ -38,6 +38,7 @@ export class RegisterComponent implements OnInit {
         }
 
         this.loading = true;
+        console.log("in registeration method");
         this.userService.register(this.registerForm.value)
             .pipe(first())
             .subscribe(
