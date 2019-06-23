@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 
 import { User } from '../_models';
+import { UserBody } from '../_models/UserBody';
 import { UserCredentials } from '../_models/userCredentials';
 import { Observable } from 'rxjs';
 
@@ -27,8 +28,9 @@ export class UserService {
         return this.http.get(`${config.apiUrl}/users/` + id);
     }
 
-    register(user: User) {
-        return this.http.post(`${config.apiUrl}/users/register`, user);
+    register(userBody: UserBody) {
+        console.log("here------------- register");
+        return this.http.post(`http://localhost:8090/api/NewUser`, userBody);
     }
 
     update(user: User) {

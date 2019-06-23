@@ -22,6 +22,7 @@ public class UserServicesImpl implements UserServices {
 
 	@Override
 	public Users login(String email, String password) {
+		System.err.print("inside login");
 		Users loggedinUser = loginServices.login(email, password);
 		if (loggedinUser == null) {
 			throw new UsernameNotFoundException(email + " not Found or bad credentials");
@@ -32,8 +33,15 @@ public class UserServicesImpl implements UserServices {
 
 	@Override
 	public Users addUser(Users user) {
+		System.err.println("inside register");
+		System.err.println(user.getDisplayName());
+		System.err.println(user.getEmail());
+		
+		user.setDisplayName(user.getDisplayName().toLowerCase());
 		Users u = mongoTemplate.insert(user);
+		System.err.println("after insert");
 		if (!u.get_id().equals(null) || u.get_id() != null) {
+			System.err.print("inside if condition ");
 			APICaller.EmailAPI(u.getEmail());
 			return u;
 		} else {
