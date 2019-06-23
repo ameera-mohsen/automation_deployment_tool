@@ -39,8 +39,9 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
-
+		System.err.println("Before checking object == null ");
 		if (deploymentRequest != null) {
+			System.err.println("After checking object != null ");
 			String assignOnUserEmail = "", pickedByUserEmail = "";
 			if (deploymentRequest.getAssignOnUser() != null) {
 				assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
@@ -57,8 +58,17 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 			deploymentRequest.setRequestSubject(deploymentSubject);
 			String id;
-			id = (String) getNextSequence("requestid");
+			System.out.println("Befor Next Sequence");
+			try {
+				id = (String) getNextSequence("requestid");
+			}
+			catch (Exception e) {
+				id = "AHMED OSAMA";
+				System.out.println("Exception is -- " + e.getMessage());
+			}
+			
 			deploymentRequest.setId(id);
+			System.out.println("Befor insert in DB");
 			return mongoTemplate.insert(deploymentRequest);
 		}
 		return null;
@@ -66,7 +76,9 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 	
 	private String initMailSubject(DeploymentRequest deploymentRequest) {
-		if(deploymentRequest.getRequestSubject().equals("")) {
+		if(deploymentRequest.getRequestSubject()==null || deploymentRequest.getRequestSubject().isEmpty())
+		{
+			//In case off Add new request
 			String affectedServices = "";
 			for (String str : deploymentRequest.getAffectedService()) {
 				affectedServices+="<" + str + ">";
@@ -77,6 +89,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			return mailSubject;
 		}
 		else {
+			//In case of update request
 			return deploymentRequest.getRequestSubject();
 		}
 	}
