@@ -36,7 +36,7 @@ public class UserServicesImpl implements UserServices {
 		System.err.println("inside register");
 		System.err.println(user.getDisplayName());
 		System.err.println(user.getEmail());
-		
+		user.getCredentials().setUserName(user.getCredentials().getUserName().toLowerCase());
 		user.setDisplayName(user.getDisplayName().toLowerCase());
 		Users u = mongoTemplate.insert(user);
 		System.err.println("after insert");
