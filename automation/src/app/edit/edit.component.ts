@@ -20,7 +20,7 @@ export class EditRequestComponent implements OnInit {
     //deploymentReqId: String;
 
     allRequestBody: ResponseBody[];
-  resBody = {} as ResponseBody;
+    resBody = {} as ResponseBody;
     resStatus = {} as ResponseStatus;
     editForm: FormGroup;
     requestInfo: RequestInfo[];

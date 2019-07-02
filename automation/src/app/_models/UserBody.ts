@@ -2,6 +2,8 @@ import { Groups } from "./groups";
 import { Privilege } from "./privilege";
 import { UserCredentials } from "./userCredentials";
 
+
+
 export interface UserBody {
 
     _id: string;
