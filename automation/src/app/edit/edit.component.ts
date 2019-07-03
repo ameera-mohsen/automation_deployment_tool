@@ -105,8 +105,7 @@ export class EditRequestComponent implements OnInit {
                 reason:data.responseBody.reason,
                 releaseNote:data.responseBody.releaseNote,
                 affectedService:data.responseBody.affectedService,
-                deploymentComment: '',
-                // deploymentComment: data.responseBody.requestInfo.comment,              
+                deploymentComment: data.responseBody.requestInfo[0].comment,              
                 requestSubject:data.responseBody.requestSubject,               
                 status: this.selectedStatus,           
             });
@@ -152,7 +151,9 @@ export class EditRequestComponent implements OnInit {
         console.log(this.resBody.status);
         console.log("Subject is -- " + this.resBody.requestSubject);
         console.log("comment is -- " + this.reqInfo.comment);
-        this.searchService.updateRequestData(this.resBody.id,this.resBody.status, this.resBody.requestSubject)
+        this.searchService.updateRequestObj(this.resBody)
+
+        //this.searchService.updateRequestData(this.resBody.id,this.resBody.status, this.resBody.requestSubject)
         // this.searchService.updateRequest(this.resBody.id,this.resBody.status)
           .subscribe(
             (data: Request) => {

@@ -94,6 +94,10 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	}
 	@Override
 	public DeploymentRequest updateDeploymentRequest(DeploymentRequest deploymentRequest) {
+		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentRequest.getId());
+		enrichDeploymentRequest(deploymentReqToUpdated, deploymentRequest.getStatus(), deploymentRequest.getDeploymentTime());
+		APICaller.EmailAPI(deploymentReqToUpdated.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + deploymentReqToUpdated.getInitiatorUser().getDisplayName(), deploymentRequest.getRequestSubject());
+		
 		return mongoTemplate.save(deploymentRequest);
 
 	}
