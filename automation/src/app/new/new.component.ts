@@ -228,7 +228,7 @@ export class NewDeploymentComponent implements OnInit {
           }
         },
         error => {
-          alert(" Date msh Valid :: " + error);
+          alert(" Data not valid :: " + error);
           this.router.navigate(['home']);
         });
   }
