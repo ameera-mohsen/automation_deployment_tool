@@ -131,15 +131,31 @@
                     </select>
                 </div>
 
-                
-
                 <div class="form-group">
-                    <label for="comment">Comment:</label>
+                    <table class="table" *ngIf="requestInfoArr?.length">
+                        <thead>
+                            <tr>
+                                <th>Comment</th>
+                                <th>By</th>
+                                <th>At</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let reqInfo of requestInfoArr" style="margin-bottom: 10px;">
+                                <td ><textarea class="form-control" style="width: 99%; height: 99%; border: none;" readonly>{{reqInfo.comment}}</textarea></td>
+                                <td >{{reqInfo.displayName}}</td>
+                                <td >{{reqInfo.time}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <label for="comment">New comment:</label>
                     <textarea formControlName="deploymentComment" placeholder="Deployment Comment" name="deploymentComment"
                         class="form-control" id="deploymentComment"></textarea>
                 </div>
+
                 <button class="btn btn-success">Update</button>
             </form>
-
 
         </div>
