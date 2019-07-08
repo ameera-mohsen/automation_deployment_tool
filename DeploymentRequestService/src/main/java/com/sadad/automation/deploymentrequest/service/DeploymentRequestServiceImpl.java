@@ -22,6 +22,7 @@ import com.sadad.automation.deploymentrequest.common.CustomResponse;
 import com.sadad.automation.deploymentrequest.common.DeploymentReqException;
 import com.sadad.automation.deploymentrequest.common.Status;
 import com.sadad.automation.deploymentrequest.common.StatusCode;
+import com.sadad.automation.deploymentrequest.entity.DatabaseSequence;
 import com.sadad.automation.deploymentrequest.entity.DeploymentRequest;
 import com.sadad.automation.deploymentrequest.entity.RequestInfo;
 import com.sadad.automation.deploymentrequest.entity.Users;
@@ -40,6 +41,8 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
 		System.err.println("Before checking object == null ");
 		if (deploymentRequest != null) {
+			// set display name to small letters 
+			deploymentRequest.getInitiatorUser().setDisplayName(deploymentRequest.getInitiatorUser().getDisplayName().toLowerCase());
 			System.err.println("After checking object != null ");
 			String assignOnUserEmail = "", pickedByUserEmail = "";
 			if (deploymentRequest.getAssignOnUser() != null) {
@@ -59,7 +62,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			String id;
 			System.out.println("Befor Next Sequence");
 			try {
-				id = (String) getNextSequence("requestid");
+				id = (String) getNextSequence();
 			}
 			catch (Exception e) {
 				id = "AHMED OSAMA";
@@ -351,7 +354,8 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 				continue;
 			} else if (entry.getKey().equals("initiatorUser.displayName")) {
 				System.out.println("print here :----------");
-				query.addCriteria(Criteria.where(entry.getKey()).regex("^"+entry.getValue().toString()));
+				query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));
+				//query.addCriteria(Criteria.where(entry.getKey()).regex("^"+entry.getValue().toString()));
 
 			} else {
 				query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));
@@ -362,26 +366,43 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		return deploymentRequestList;
 	}
 
-	public Object getNextSequence(String name) {
-		System.err.println("here  ----" );
-		MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-		System.err.println("client created -----" );
-	    // Now connect to your databases
-	    DB db = mongoClient.getDB("automationprocess");
-	    System.err.println("db    -----" );
-	    DBCollection collection = db.getCollection("DatabaseSequence");
-	    System.err.println("after getting collection -----" );
-	    DBObject query = new BasicDBObject();
-	    query.put("_id", name);
-	    System.err.println("before inc" );
-	    DBObject change = new BasicDBObject("sequence_value", 1);
-        DBObject update = new BasicDBObject("$inc", change);
-        System.err.println("before find" );
-        DBObject res = collection.findAndModify(query, new BasicDBObject(), new BasicDBObject(), false, update, true,
-            true);
-        System.err.println("after find" );
-        System.err.println(res);
-        return String .valueOf((int)res.get("sequence_value"));
+	public Object getNextSequence() {
+		
+//		Query query = new Query();
+//		query.addCriteria(Criteria.where("_id").in("requestid"));
+//		System.out.println("query:" + query);
+//		List<DatabaseSequence> databaseSequenceList = mongoTemplate.find(query, DatabaseSequence.class);
+//		DatabaseSequence databaseSequence=databaseSequenceList.get(0);
+//		System.out.println("databaseSequence:" + databaseSequence.getID() +"   "+databaseSequence.getSequenceValue());
+//		int seq= databaseSequence.getSequenceValue() ;
+//		databaseSequence.setSequenceValue(seq++);
+		
+		DatabaseSequence databaseSequence = mongoTemplate.findById("requestid",DatabaseSequence.class);
+		System.out.println("databaseSequence:" + databaseSequence.getID() +"   "+databaseSequence.getSequenceValue());
+		int seq= databaseSequence.getSequenceValue() ;
+		databaseSequence.setSequenceValue(seq+1);
+		mongoTemplate.save(databaseSequence);
+		return String.valueOf(databaseSequence.getSequenceValue());
+		
+//		System.err.println("here  ----" );
+//		MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+//		System.err.println("client created -----" );
+//	    // Now connect to your databases
+//	    DB db = mongoClient.getDB("automationprocess");
+//	    System.err.println("db    -----" );
+//	    DBCollection collection = db.getCollection("DatabaseSequence");
+//	    System.err.println("after getting collection -----" );
+//	    DBObject query = new BasicDBObject();
+//	    query.put("_id", name);
+//	    System.err.println("before inc" );
+//	    DBObject change = new BasicDBObject("sequence_value", 1);
+//        DBObject update = new BasicDBObject("$inc", change);
+//        System.err.println("before find" );
+//        DBObject res = collection.findAndModify(query, new BasicDBObject(), new BasicDBObject(), false, update, true,
+//            true);
+//        System.err.println("after find" );
+//        System.err.println(res);
+//        return String .valueOf((int)res.get("sequence_value"));
 	}
 
 }

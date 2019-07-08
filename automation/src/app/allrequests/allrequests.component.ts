@@ -108,4 +108,15 @@ export class AllrequestsComponent implements OnInit {
     
    
 }
+displayname( displayname :string){
+  var array = displayname.split(" ");
+  for (var  i=0;i< array.length ;i++ ){
+      array[i]=array[i].charAt(0).toUpperCase() +array[i].slice(1)
+  }
+  var display="";
+  for (var  i=0;i< array.length ;i++ ){
+      display+=array[i]+" ";
+  }
+  return display;
+  }
 }
