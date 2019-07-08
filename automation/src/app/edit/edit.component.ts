@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import { Request, RequestInfo, User } from '../_models';
 import {  AuthenticationService} from '../_services';
+import {formatDate } from '@angular/common';
 
 @Component({
     selector: 'editrequests',
@@ -15,15 +16,11 @@ import {  AuthenticationService} from '../_services';
 })
 
 export class EditRequestComponent implements OnInit {
-
-    //newStatus: String;
-    //deploymentReqId: String;
-
     allRequestBody: ResponseBody[];
     resBody = {} as ResponseBody;
     resStatus = {} as ResponseStatus;
     editForm: FormGroup;
-    requestInfo: RequestInfo[];
+    requestInfoArr: Array<RequestInfo>;
     reqInfo = {} as RequestInfo;
     status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'];
     selectedStatus: string = '';
@@ -45,21 +42,21 @@ export class EditRequestComponent implements OnInit {
     initiatorUser = {} as User;
 
     isRequestSubjectDisabled:boolean;
-
+    isCommentTableDisblayed: string;
     
-    constructor(private formBuilder: FormBuilder,private authenticationService: AuthenticationService,private router: Router,public searchService: SearchService) { }
-
-  
-
+    constructor(
+      private formBuilder: FormBuilder,
+      private authenticationService: AuthenticationService,
+      private router: Router,
+      public searchService: SearchService) { }
 
     ngOnInit() {
       let userData = window.localStorage.getItem("user");
       if(!userData) {
-          //console.log("Loggedin User :  "  + userData);
-         // alert("Invalid action. User is Not loggedIn")
           this.router.navigate(['login']);
           return;
       }
+      
       this.id = window.localStorage.getItem("id");
       this.displayName = window.localStorage.getItem("displayName");
       this.email = window.localStorage.getItem("email");
@@ -73,6 +70,7 @@ export class EditRequestComponent implements OnInit {
 
         this.editForm = this.formBuilder.group({
           resBody: [],
+          //requestInfoArr: this.formBuilder.array([]) ,
             id: [''],
             environemnt:[''],
             layer:[''],
@@ -105,54 +103,67 @@ export class EditRequestComponent implements OnInit {
                 reason:data.responseBody.reason,
                 releaseNote:data.responseBody.releaseNote,
                 affectedService:data.responseBody.affectedService,
-                deploymentComment: '',
-                // deploymentComment: data.responseBody.requestInfo.comment,              
+                deploymentComment: '',              
                 requestSubject:data.responseBody.requestSubject,               
-                status: this.selectedStatus,           
+                status: this.selectedStatus,       
             });
+
             if (data.responseBody.assignOnGroup=="DEPLOYMENT") {
               this.isRequestSubjectDisabled=false;
             } else {
               this.isRequestSubjectDisabled=true;
             }
+
+            if(data.responseBody.requestInfo != null && data.responseBody.requestInfo.length > 0){
+              this.requestInfoArr = data.responseBody.requestInfo.map(index => {
+                return { 
+                  userId: index.userId, 
+                  displayName: index.displayName,
+                  comment: index.comment,
+                  time: index.time
+                };
+              });
+
+              this.isCommentTableDisblayed = "block";
+            } else {
+              this.requestInfoArr = [];
+              this.isCommentTableDisblayed = "none";
+            }
+
             this.resBody= data.responseBody;          
           });    
+    }
+
+    addRequestInfo(userId, displayName, comment){
+      this.reqInfo.userId = userId;
+      this.reqInfo.displayName = displayName;
+      let today = new Date();
+      this.reqInfo.time = formatDate(today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
+      this.reqInfo.comment = comment;
+      this.requestInfoArr.push(this.reqInfo);
     }
 
     buildRequest() {
       // fill resBody with data from Form
       this.resBody.status = this.editForm.get('status').value;
-      this.reqInfo.comment = this.editForm.get('deploymentComment').value;
+      //this.reqInfo.comment = this.editForm.get('deploymentComment').value;
       this.resBody.requestSubject = this.editForm.get('requestSubject').value;
-      this.requestInfo = [this.reqInfo];
-      this.resBody.requestInfo = this.requestInfo;
+
+      this.addRequestInfo(this.id, this.displayName, this.editForm.get('deploymentComment').value);
+      //this.requestInfo = [this.reqInfo];
+      this.resBody.requestInfo = this.requestInfoArr;
     }
 
     onSubmit() {
-       // console.log("OnUpdate :: ReqId:  "  + this.editForm.get('id').value + " and statu:>>>  " +  this.editForm.get('status').value)
-        // this.searchService.updateRequest(this.editForm.get('id').value,  this.editForm.get('status').value)
-        //   .subscribe(
-        //     (data: Request) => {
-        //       if(data.responseStatus.statusCode === 200) {
-        //         alert('Request updated successfully.');
-        //         this.router.navigate(['home']);
-        //       }else {
-        //         alert(data.responseStatus+ " will take you Home ");
-        //         this.router.navigate(['home']);
-        //       }
-        //     },
-        //     error => {
-        //       alert(error);
-        //     });
-
         this.buildRequest();
-        //console.log('blablablaaaaaaaa' + this.resBody.reason);
-        //this.searchService.updateRequestObj(this.resBody)
-        console.log(this.resBody.id);
-        console.log(this.resBody.status);
+        console.log("blablablaaaaa");
+        console.log(this.requestInfoArr);
         console.log("Subject is -- " + this.resBody.requestSubject);
         console.log("comment is -- " + this.reqInfo.comment);
-        this.searchService.updateRequestData(this.resBody.id,this.resBody.status, this.resBody.requestSubject)
+        
+        this.searchService.updateRequestObj(this.resBody)
+
+        //this.searchService.updateRequestData(this.resBody.id,this.resBody.status, this.resBody.requestSubject)
         // this.searchService.updateRequest(this.resBody.id,this.resBody.status)
           .subscribe(
             (data: Request) => {
@@ -176,6 +187,4 @@ export class EditRequestComponent implements OnInit {
     
        
     }
-      
-
 }
