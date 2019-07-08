@@ -367,42 +367,12 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	}
 
 	public Object getNextSequence() {
-		
-//		Query query = new Query();
-//		query.addCriteria(Criteria.where("_id").in("requestid"));
-//		System.out.println("query:" + query);
-//		List<DatabaseSequence> databaseSequenceList = mongoTemplate.find(query, DatabaseSequence.class);
-//		DatabaseSequence databaseSequence=databaseSequenceList.get(0);
-//		System.out.println("databaseSequence:" + databaseSequence.getID() +"   "+databaseSequence.getSequenceValue());
-//		int seq= databaseSequence.getSequenceValue() ;
-//		databaseSequence.setSequenceValue(seq++);
-		
 		DatabaseSequence databaseSequence = mongoTemplate.findById("requestid",DatabaseSequence.class);
 		System.out.println("databaseSequence:" + databaseSequence.getID() +"   "+databaseSequence.getSequenceValue());
 		int seq= databaseSequence.getSequenceValue() ;
 		databaseSequence.setSequenceValue(seq+1);
 		mongoTemplate.save(databaseSequence);
 		return String.valueOf(databaseSequence.getSequenceValue());
-		
-//		System.err.println("here  ----" );
-//		MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-//		System.err.println("client created -----" );
-//	    // Now connect to your databases
-//	    DB db = mongoClient.getDB("automationprocess");
-//	    System.err.println("db    -----" );
-//	    DBCollection collection = db.getCollection("DatabaseSequence");
-//	    System.err.println("after getting collection -----" );
-//	    DBObject query = new BasicDBObject();
-//	    query.put("_id", name);
-//	    System.err.println("before inc" );
-//	    DBObject change = new BasicDBObject("sequence_value", 1);
-//        DBObject update = new BasicDBObject("$inc", change);
-//        System.err.println("before find" );
-//        DBObject res = collection.findAndModify(query, new BasicDBObject(), new BasicDBObject(), false, update, true,
-//            true);
-//        System.err.println("after find" );
-//        System.err.println(res);
-//        return String .valueOf((int)res.get("sequence_value"));
 	}
 
 }
