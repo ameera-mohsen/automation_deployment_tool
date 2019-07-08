@@ -377,7 +377,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
             true);
         System.err.println("after find" );
         System.err.println(res);
-        return res.get("sequence_value").toString();
+        return String .valueOf((int)res.get("sequence_value"));
 	}
 
 }
