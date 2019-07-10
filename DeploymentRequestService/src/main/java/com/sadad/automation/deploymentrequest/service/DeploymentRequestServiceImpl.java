@@ -41,8 +41,6 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
 		System.err.println("Before checking object == null ");
 		if (deploymentRequest != null) {
-			// set display name to small letters 
-			deploymentRequest.getInitiatorUser().setDisplayName(deploymentRequest.getInitiatorUser().getDisplayName().toLowerCase());
 			System.err.println("After checking object != null ");
 			String assignOnUserEmail = "", pickedByUserEmail = "";
 			if (deploymentRequest.getAssignOnUser() != null) {
@@ -65,7 +63,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 				id = (String) getNextSequence();
 			}
 			catch (Exception e) {
-				id = "AHMED OSAMA";
+				id = "temp";
 				System.out.println("Exception is -- " + e.getMessage());
 			}
 			
