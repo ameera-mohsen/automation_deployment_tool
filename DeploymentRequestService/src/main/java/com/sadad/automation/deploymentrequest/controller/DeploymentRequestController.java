@@ -149,7 +149,7 @@ public class DeploymentRequestController {
 	
 	@GetMapping("searchDeploymentRequestByCriteria")
 	public ResponseEntity<CustomResponse> searchDeploymentRequestByCriteria(@RequestParam MultiValueMap<String,String> searchCriteria){
-		List<DeploymentRequest> deploymentRequestList = deploymentRequestService.searchDeploymentRequestByCriteria(searchCriteria);	
+		List<DeploymentRequest> deploymentRequestList = deploymentRequestService.searchDeploymentRequestByCriteria(searchCriteria);
 		return deploymentRequestService.buildSuccessListResponse(deploymentRequestList, " Deployment Request Retrived Successfully..");	
 	}
 

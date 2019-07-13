@@ -1,0 +1,112 @@
+      <div class="col-md-6 user-container">
+          <h2 class="text-center">Details of Deployment Request </h2>
+          <form [formGroup]="detailForm">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id">Id:</label>
+                    <input type="text" formControlName="id" placeholder="id" name="id" class="form-control" id="id"
+                        readonly="true">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="defectId">Defect ID:</label>
+                    <input formControlName="defectId" placeholder="defectId" name="defectId"
+                        class="form-control" id="defectId" readonly="true">
+                </div>
+                
+            </div>
+            <div class="form-group">
+                <label for="displayName">Issued By:</label>
+                <input formControlName="displayName" placeholder="displayName" name="displayName"
+                    class="form-control" id="displayName" readonly="true">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id">Environment:</label>
+                    <input type="text" formControlName="environemnt" placeholder="environemnt" name="environemnt" class="form-control"
+                    id="environemnt"  readonly="true">
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="id">Layer:</label>
+                    <input type="text" formControlName="layer" placeholder="layer" name="layer" class="form-control"
+                    id="layer"  readonly="true">
+                </div>
+              </div>
+              <div class="form-row">
+              <div class="form-group col-md-6">
+                  <label for="affectedService">Affected Service:</label>
+                  <input formControlName="affectedService" name="affectedService" class="form-control" id="affectedService" readonly="true">
+                </div>
+              <div class="form-group col-md-6">
+                  <label for="currentStatus">Current Status:</label>
+                  <input formControlName="currentStatus" placeholder="Current Status" name="currentStatus"
+                      class="form-control" id="currentStatus" readonly="true">
+              </div>
+            </div>
+              
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                  <label for="requestDate">Request Date:</label>
+                  <input formControlName="requestDate" placeholder="requestDate" name="requestDate"
+                      class="form-control" id="requestDate" readonly="true">
+              </div>
+
+
+
+              <div class="form-group col-md-6">
+                  <label for="deploymentTime">Deployment Time:</label>
+                  <input formControlName="deploymentTime" placeholder="Deployment Time" name="deploymentTime"
+                      class="form-control" id="deploymentTime" readonly="true">
+              </div>
+              <div class="form-row">
+              <div class="form-group col-md-6">
+                  <label for="releaseNote">Release Note: </label>
+                  <input formControlName="releaseNote" name="releaseNote" class="form-control" id="releaseNote" readonly="true">
+                </div>
+
+               
+
+              <div class="form-group col-md-6">
+                  <label for="requestSubject">Version:</label>
+                  <input formControlName="requestSubject" name="requestSubject" class="form-control" id="requestSubject" readonly="true">
+              </div>
+            </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                  <label for="assignOnGroup">AssignOn Group:</label>
+                  <input formControlName="assignOnGroup" placeholder="assignOnGroup" name="assignOnGroup"
+                      class="form-control" id="assignOnGroup" readonly="true">
+              </div>
+
+
+              <div class="form-group col-md-6">
+                  <label for="reason">Deployment Reason:</label>
+                  <input formControlName="reason" placeholder="reason" name="reason"
+                      class="form-control" id="reason" readonly="true">
+              </div>
+            </div>
+
+              <div class="form-group">
+                <table class="table" *ngIf="requestInfoArr?.length">
+                    <thead>
+                        <tr>
+                            <th>Comment</th>
+                            <th>By</th>
+                            <th>At</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let reqInfo of requestInfoArr" style="margin-bottom: 10px;">
+                            <td ><textarea class="form-control" style="width: 99%; height: 99%; border: none;" readonly>{{reqInfo.comment}}</textarea></td>
+                            <td >{{reqInfo.displayName}}</td>
+                            <td >{{reqInfo.time}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+              </div>
+              <button class="btn btn-primary btn-lg btn-block" (click)="BackToList()" style="margi">Back To List</button>
+          </form>
+      </div>
