@@ -86,7 +86,7 @@ export class EditRequestComponent implements OnInit {
             affectedService:[''],
             deploymentTime: ['', Validators.required],
             deploymentComment: [''],
-            requestSubject: [''],
+            requestSubject: [''],           
             status: [this.status]
           });
           
@@ -119,10 +119,8 @@ export class EditRequestComponent implements OnInit {
             console.log("Current status is " + data.responseBody.status);
             console.log("Assigned Group is " + data.responseBody.assignOnGroup);
             this.searchService.getAllowedStatusesList(data.responseBody.status, data.responseBody.assignOnGroup).pipe(first()).subscribe(statuses => {
-                  this.status = statuses;
-            });            
-            //this.status= ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'], 
-
+                  this.status = statuses;                
+            });
             if(data.responseBody.requestInfo != null && data.responseBody.requestInfo.length > 0){
               this.requestInfoArr = data.responseBody.requestInfo.map(index => {
                 return { 

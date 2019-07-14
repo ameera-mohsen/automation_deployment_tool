@@ -13,11 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.sadad.automation.deploymentrequest.common.APICaller;
 import com.sadad.automation.deploymentrequest.common.CustomResponse;
 import com.sadad.automation.deploymentrequest.common.DeploymentReqException;

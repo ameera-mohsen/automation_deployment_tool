@@ -1,0 +1,7 @@
+com\dxc\automation\entity\AchnowledgeResponse.class
+com\dxc\automation\controller\MailController.class
+com\dxc\automation\service\EmailService.class
+com\dxc\automation\MailServiceApplication.class
+com\dxc\automation\entity\Email.class
+com\dxc\automation\authentication\AuthenticateAPI.class
+com\dxc\automation\service\EmailServiceImpl.class

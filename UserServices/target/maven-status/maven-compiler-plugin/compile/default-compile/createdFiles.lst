@@ -1,0 +1,16 @@
+com\dxc\automation\common\CustomResponse.class
+com\dxc\automation\common\Status.class
+com\dxc\automation\common\UserNotFoundException.class
+com\dxc\automation\controller\UserController.class
+com\dxc\automation\entity\Users.class
+com\dxc\automation\entity\Privilege.class
+com\dxc\automation\entity\Groups.class
+com\dxc\automation\common\APICaller.class
+com\dxc\automation\service\GroupService.class
+com\dxc\automation\service\UserServices.class
+com\dxc\automation\entity\Credentials.class
+com\dxc\automation\entity\Email.class
+com\dxc\automation\authentication\AuthenticateAPI.class
+com\dxc\automation\UserServicesApplication.class
+com\dxc\automation\service\LoginServices.class
+com\dxc\automation\service\UserServicesImpl.class
