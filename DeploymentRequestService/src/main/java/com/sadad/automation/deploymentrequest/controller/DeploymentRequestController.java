@@ -59,6 +59,11 @@ public class DeploymentRequestController {
 				" Deployment Request Retrived Successfully..");
 
 	}
+	
+	@GetMapping("/AllowedStatusesList/{currentStatus}/{assignedGroup}")
+	private List<String> getAllowedStatusesList(@PathVariable String currentStatus, @PathVariable String assignedGroup){	
+		return deploymentRequestService.getAllowedStatusesList(currentStatus, assignedGroup);
+	}
 
 	@GetMapping("/DeploymentReqByAssignedUserId/{userId}")
 	private ResponseEntity<CustomResponse> findDeploymentReqByAssignedUserId(@PathVariable String userId) {

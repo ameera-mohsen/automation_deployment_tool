@@ -45,4 +45,6 @@ public interface DeploymentRequestService {
 	
 	List<DeploymentRequest> searchDeploymentRequestByCriteria(MultiValueMap<String,String> searchCriteria);
 	Object getNextSequence(String name) throws Exception;
+	
+	public List<String> getAllowedStatusesList(String currentStatus, String assigedGroup);
 }

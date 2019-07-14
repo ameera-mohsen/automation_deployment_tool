@@ -6,7 +6,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import { Request, RequestInfo, User } from '../_models';
-import {  AuthenticationService} from '../_services';
+import {StatusService ,  AuthenticationService} from '../_services';
+import { observable, Observable } from 'rxjs';
+import { first, isEmpty } from 'rxjs/operators';
 
 @Component({
     selector: 'editrequests',
@@ -25,7 +27,8 @@ export class EditRequestComponent implements OnInit {
     editForm: FormGroup;
     requestInfo: RequestInfo[];
     reqInfo = {} as RequestInfo;
-    status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'];
+    //status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'];
+    status: string[]=[];
     selectedStatus: string = '';
     id: string;
     environemnt: string;
@@ -115,8 +118,14 @@ export class EditRequestComponent implements OnInit {
             } else {
               this.isRequestSubjectDisabled=true;
             }
+            console.log("Current status is " + data.responseBody.status);
+            console.log("Assigned Group is " + data.responseBody.assignOnGroup);
+            this.searchService.getAllowedStatusesList(data.responseBody.status, data.responseBody.assignOnGroup).pipe(first()).subscribe(statuses => {
+                  this.status = statuses;
+            });            
+            //this.status= ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'], 
             this.resBody= data.responseBody;          
-          });    
+          }); 
     }
 
     buildRequest() {

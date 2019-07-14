@@ -1,5 +1,6 @@
 package com.sadad.automation.deploymentrequest.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
@@ -38,9 +39,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
-		System.err.println("Before checking object == null ");
 		if (deploymentRequest != null) {
-			System.err.println("After checking object != null ");
 			String assignOnUserEmail = "", pickedByUserEmail = "";
 			if (deploymentRequest.getAssignOnUser() != null) {
 				assignOnUserEmail = deploymentRequest.getAssignOnUser().getEmail();
@@ -378,6 +377,115 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
         System.err.println("after find" );
         System.err.println(res);
         return res.get("sequence_value").toString();
+	}
+	
+	@Override
+	public List<String> getAllowedStatusesList(String currentStatus, String assigedGroup) {
+		List<String> resultList = new ArrayList<String>();
+		switch (currentStatus) {
+		case "SENT":
+			switch (assigedGroup) {
+			case "DEPLOYMENT":
+				resultList.add("PENDING_APPROVAL");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+			
+		case "PENDING_APPROVAL":
+			switch (assigedGroup) {
+			case "TESTING":
+				resultList.add("APPROVED");
+				resultList.add("REJECTED");	
+				resultList.add("POSTPONED");	
+				resultList.add("INFO_REQUESTED");	
+				break;
+			default:
+				 resultList.add(currentStatus);
+				 break;
+			}		
+			break;
+			
+		case "INFO_REQUESTED":
+			switch (assigedGroup) {
+			case "DEVELOPMENT":
+				resultList.add("INFO_SUBMITTED");
+				resultList.add("REJECTED");	
+				resultList.add("POSTPONED");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+			
+		case "INFO_SUBMITTED":
+			switch (assigedGroup) {
+			case "TESTING":
+				resultList.add("APPROVED");
+				resultList.add("REJECTED");	
+				resultList.add("POSTPONED");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+			
+		case "APPROVED":
+			switch (assigedGroup) {
+			case "DEPLOYMENT":
+				resultList.add("IN_PROGRESS");	
+				break;
+			case "DEVELOPMENT":
+				resultList.add("CANCELLED");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+			
+		case "IN_PROGRESS":
+			switch (assigedGroup) {
+			case "DEPLOYMENT":
+				resultList.add("PENDING_VERIFICATION");	
+				break;
+			case "DEVELOPMENT":
+				resultList.add("CANCELLED");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+			
+		case "PENDING_VALIDATION":
+			switch (assigedGroup) {
+			case "DEVELOPMENT":
+				resultList.add("VALIDATED");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+			
+		case "VALIDATED":
+			switch (assigedGroup) {
+			case "DEPLOYMENT":
+				resultList.add("COMPLETED");	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+		}
+		System.out.println("resultList Allowed List is -- " + resultList.size());
+		return resultList;
 	}
 
 }

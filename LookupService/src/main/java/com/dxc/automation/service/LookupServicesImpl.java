@@ -1,5 +1,6 @@
 package com.dxc.automation.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class LookupServicesImpl implements LookupServices {
 
 	@Override
 	public List<Status> listStatus() {
+		System.out.println("List is == > " + mongoTemplate.findAll(Status.class).size());
 		return mongoTemplate.findAll(Status.class);
 	}
 
