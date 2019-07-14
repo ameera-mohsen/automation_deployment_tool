@@ -2,29 +2,31 @@ package com.sadad.automation.deploymentrequest.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection = "DatabaseSequence")
 public class DatabaseSequence {
 	
-	@Id
-    private String id;
- 
-    private long seq;
+	@Field("_id")
+    private String ID;
+	
+	@Field("SequenceValue")
+    private int sequenceValue;
 
-	public String getId() {
-		return id;
+	public String getID() {
+		return ID;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setID(String iD) {
+		ID = iD;
 	}
 
-	public long getSeq() {
-		return seq;
+	public int getSequenceValue() {
+		return sequenceValue;
 	}
 
-	public void setSeq(long seq) {
-		this.seq = seq;
+	public void setSequenceValue(int sequenceValue) {
+		this.sequenceValue = sequenceValue;
 	}
-    
 
+	
 }

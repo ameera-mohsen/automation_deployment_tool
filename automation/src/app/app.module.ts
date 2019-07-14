@@ -22,9 +22,8 @@ import { EditRequestComponent } from './edit/edit.component';
 import { NewDeploymentComponent } from './new/new.component';
 import { ProgressSpinnerOverviewExample } from './common/progress-spinner-overview-example';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';;
+import { DetailsComponent } from './details/details.component'
 
 
 @NgModule({
@@ -49,6 +48,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         FilterPipe,
         RegisterComponent,
         AllrequestsComponent
+,
+        DetailsComponent
     ],
     providers: [
         AuthGuard,

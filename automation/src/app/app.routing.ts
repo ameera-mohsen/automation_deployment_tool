@@ -10,10 +10,12 @@ import { EditRequestComponent } from './edit/edit.component';
 import { NewDeploymentComponent } from './new/new.component';
 import { AlertComponent } from './_directives';
 import { ProgressSpinnerOverviewExample } from './common/progress-spinner-overview-example';
+import { DetailsComponent } from './details/details.component';
 
 const appRoutes: Routes = [
     { path: 'home', component: HomeComponent},// , canActivate: [AuthGuard] 
     { path: 'login', component: LoginComponent },
+    { path: 'details', component: DetailsComponent },
     { path: 'edit', component: EditRequestComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'listAll', component: AllrequestsComponent},

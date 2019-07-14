@@ -16,6 +16,25 @@ import { formatDate } from '@angular/common';
 })
 export class NewDeploymentComponent implements OnInit {
 
+					
+							 
+    selectedLayers = [
+    { id: 100, name: 'WPS' },
+    { id: 200, name: 'ODM' },
+    { id: 300, name: 'IIB' },
+    { id: 300, name: 'WAS' },
+    { id: 400, name: 'DP' },
+    { id: 400, name: 'DB' },
+    { id: 400, name: 'WSRR' }
+  ];
+  					 
+							 
+							 
+							
+							
+							 
+	
+  
   
 
   assignOnUser: User = {
@@ -41,6 +60,7 @@ export class NewDeploymentComponent implements OnInit {
   status: object[];
   users: User[] = [];
   selectedLayer = [''];
+  MyselectedLayer=[];			 
 
 
   IIB: boolean = false;
@@ -54,7 +74,7 @@ export class NewDeploymentComponent implements OnInit {
   theCheckbox = false;
 
   environment: string[] = ['SIT', 'PT', 'MFT'];
-  layers = ['IIB', 'WPS', 'WSRR', 'WAS', 'DP', 'DB', 'WSRR', 'WAS'];
+  layers = ['IIB', 'WPS', 'WSRR', 'WAS', 'DP', 'DB', 'ODM'];
   affectedService = ['Payment', 'Refund', 'Upload', 'Common', 'Customer', 'Account', 'Cleanup'];
   selectedAffectedService: string = '';
   selectedenv: string = '';
@@ -73,6 +93,7 @@ export class NewDeploymentComponent implements OnInit {
 
   dropdownList = [];
   selectedItems = [];
+  selectedlayers=[];	
   dropdownSettings = {};
 
   submitted=false;
@@ -109,8 +130,9 @@ export class NewDeploymentComponent implements OnInit {
     this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
     this.newForm = this.formBuilder.group({
    
+	selectedLayers: new FormArray([]),								
       Environment: [this.environment.values, Validators.required],
-      Layers: [this.selectedLayer, Validators.required],
+      layers: [this.selectedLayer, Validators.required],
       status: ['NEW'],
       defectId: [this.defectId, Validators.required],
       assignOnGroup: ['DEPLOYMENT'],
@@ -120,6 +142,8 @@ export class NewDeploymentComponent implements OnInit {
       releaseNote: [this.releaseNote, Validators.required],
     affectedService: ['', Validators.required],
     });
+
+   this.addCheckboxes();			 
 
     this.dropdownList = [
       'Payment' ,'Refund','Upload','Common' ,'Customer','Account','Cleanup'
@@ -139,15 +163,31 @@ export class NewDeploymentComponent implements OnInit {
 
   }
 
+  private addCheckboxes() {
+    this.selectedLayers.map((o, i) => {
+      const control = new FormControl(i === 0); // if first item set to true, else false
+      (this.newForm.controls.selectedLayers as FormArray).push(control);
+    });
+  }					   
+																						
+																		
+	   
+   
+
 
   buildRequestJson() {
     // fill resBody with data from Form
     //console.log(this.newForm.value);
     this.getCheckBox();
     this.selectedenv = this.newForm.get('Environment').value;
-    this.layers = this.newForm.get('Layers').value;
+   // this.layers = this.newForm.get('Layers').value;
     this.selectedAffectedService = this.newForm.get('affectedService').value;
     this.resBody.environment = this.selectedenv;
+										
+															
+	 
+											  
+										  
     this.resBody.layer = this.selectedLayer;
     //this.resBody.affectedService = this.selectedAffectedService;
     this.resBody.affectedService = this.selectedItems;
@@ -188,7 +228,7 @@ export class NewDeploymentComponent implements OnInit {
           }
         },
         error => {
-          alert(" Date msh Valid :: " + error);
+          alert(" Data not valid :: " + error);
           this.router.navigate(['home']);
         });
   }
@@ -253,10 +293,26 @@ export class NewDeploymentComponent implements OnInit {
       }
     }
  }
+ 
+  onItemSelectLayer(selectedItem : any){
+
+  this.selectedItems.push(selectedItem);
+  this.selectedItems.pop();
+
+} 
+
+onItemDeSelectLayer(item :any){
+  for(var i=0;i<this.selectedItems.length;i++){
+    if(this.selectedItems[i]==item){
+      this.selectedItems.splice(i,1);
+    }
+  }
+}
 
  
+									   
 
-
+										
 
 
   toggleVisibility(e: any) {

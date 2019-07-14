@@ -54,9 +54,13 @@
             <label for="ex1">Request Number:</label>
             <input class="form-control input-sm" id="reqId" type="text" [(ngModel)]="requestNumber">
           </div>
+          
           <div class="col-xs-3">
             <label for="ex1">Issued By:</label>
-            <input class="form-control input-sm" id="ownerId" type="text" [(ngModel)]="requestOwner">
+            <select class="form-control input-sm" id="Users" type="text" [(ngModel)]="selectedIntitiator">
+              <option value="" selected>Please select</option>
+              <option [value]="user.displayName" *ngFor="let user of users"> {{user.displayName}}</option>
+            </select>
           </div>
           <div class="col-xs-3">
             <label for="ex1">Environment:</label>
@@ -118,7 +122,7 @@
               <td>{{req.id}}</td>
               <td>{{req.defectId}}</td>
               <td>{{req.status}}</td>
-              <td>{{req.initiatorUser.displayName}}</td>
+              <td>{{displayname(req.initiatorUser.displayName)}}</td>
               <td>{{req.assignOnGroup}}</td>
               <td>{{req.requestDate}}</td>
               <td>{{req.deploymentTime}}</td>

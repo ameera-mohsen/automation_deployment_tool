@@ -44,7 +44,10 @@ public interface DeploymentRequestService {
 	ResponseEntity<CustomResponse> buildFailiarResponse();
 	
 	List<DeploymentRequest> searchDeploymentRequestByCriteria(MultiValueMap<String,String> searchCriteria);
+	
 	Object getNextSequence(String name) throws Exception;
 	
 	public List<String> getAllowedStatusesList(String currentStatus, String assigedGroup);
+	
+	Object getNextSequence() throws Exception;
 }
