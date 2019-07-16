@@ -18,7 +18,7 @@ export class NewDeploymentComponent implements OnInit {
 
 					
 							 
-    selectedLayers = [
+   selectedLayers = [
     { id: 100, name: 'WPS' },
     { id: 200, name: 'ODM' },
     { id: 300, name: 'IIB' },
@@ -30,12 +30,7 @@ export class NewDeploymentComponent implements OnInit {
   					 
 							 
 							 
-							
-							
-							 
-	
-  
-  
+		
 
   assignOnUser: User = {
     "userId": "5c5807e7fb6fc0356792bd44",
@@ -62,7 +57,7 @@ export class NewDeploymentComponent implements OnInit {
   selectedLayer = [''];
   MyselectedLayer=[];			 
 
-
+layerString: string[] = [];
   IIB: boolean = false;
   WPS: boolean = false;
   WSRR: boolean = false;
@@ -70,12 +65,15 @@ export class NewDeploymentComponent implements OnInit {
   DB: boolean = false;
   DP: boolean = false;
   ODM: boolean = false;
+  
   marked = false;
   theCheckbox = false;
-
-  environment: string[] = ['SIT', 'PT', 'MFT'];
-  layers = ['IIB', 'WPS', 'WSRR', 'WAS', 'DP', 'DB', 'ODM'];
-  affectedService = ['Payment', 'Refund', 'Upload', 'Common', 'Customer', 'Account', 'Cleanup'];
+   layers: Layer[] = [];
+   affectedService: Service[] = [];
+    environment: Environment[] = [];
+  // environment: string[] = ['SIT', 'PT', 'MFT'];
+  // layers = ['IIB', 'WPS', 'WSRR', 'WAS', 'DP', 'DB', 'ODM'];
+  // affectedService = ['Payment', 'Refund', 'Upload', 'Common', 'Customer', 'Account', 'Cleanup'];
   selectedAffectedService: string = '';
   selectedenv: string = '';
   Reason: String = '';
@@ -95,7 +93,7 @@ export class NewDeploymentComponent implements OnInit {
   selectedItems = [];
   selectedlayers=[];	
   dropdownSettings = {};
-
+  dropdownSettingsServices ={};
   submitted=false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private layerService: LayersService,
@@ -143,54 +141,100 @@ export class NewDeploymentComponent implements OnInit {
     affectedService: ['', Validators.required],
     });
 
-   this.addCheckboxes();			 
-
-    this.dropdownList = [
-      'Payment' ,'Refund','Upload','Common' ,'Customer','Account','Cleanup'
-    ];
+  // this.addCheckboxes();			 
+  //  this.dropdownList = this.affectedService;
+    // this.dropdownList = [
+    //   'Payment' ,'Refund','Upload','Common' ,'Customer','Account','Cleanup'
+    // ];
     /*this.selectedItems = [
       { item_id: 3, item_text: 'Pune' },
       { item_id: 4, item_text: 'Navsari' }
     ];*/
+    
+
     this.dropdownSettings = {
       singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      itemsShowLimit: 3,
+      idField: 'id',
+      textField: 'layerName',
+      itemsShowLimit: 4,
       allowSearchFilter: true,
-      enableCheckAll: false
+      enableCheckAll: true
     };
+    this.dropdownSettingsServices = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'serviceName',
+      itemsShowLimit: 4,
+      allowSearchFilter: true,
+      enableCheckAll: true
+    };
+
+    this.loadLayers();
+    this.loadServices();
+    this.loadEnvironments();
+
 
   }
 
-  private addCheckboxes() {
-    this.selectedLayers.map((o, i) => {
-      const control = new FormControl(i === 0); // if first item set to true, else false
-      (this.newForm.controls.selectedLayers as FormArray).push(control);
+  // private addCheckboxes() {
+  //   this.selectedLayers.map((o, i) => {
+  //     const control = new FormControl(i === 0); // if first item set to true, else false
+  //     (this.newForm.controls.selectedLayers as FormArray).push(control);
+  //   });
+  // }					   
+	private ConvertLayerArrJsonToString():string[] {
+   var listObj = this.newForm.get('layers').value;
+  var  listString:string[] = [];
+    for (var i = 0; i < listObj.length; i++) {
+      listString[i] = listObj[i].layerName;
+    }
+    return listString;
+  }																					
+  private ConvertServiceArrJsonToString():string[] {
+    var listObj = this.newForm.get('affectedService').value;
+   var  listString:string[] = [];
+     for (var i = 0; i < listObj.length; i++) {
+       listString[i] = listObj[i].serviceName;
+     }
+     return listString;
+   }																			
+  private loadLayers() {
+    this.layerService.getAll().pipe(first()).subscribe(layers => {
+        this.layers = layers;
     });
-  }					   
-																						
-																		
-	   
+}
+
+private loadServices() {
+    this.serviceListService.getAll().pipe(first()).subscribe(services => {
+        console.log('search --------------------------');
+        this.affectedService = services;
+    });
+}
+private loadEnvironments() {
+    this.environmentService.getAll().pipe(first()).subscribe(environments => {
+        this.environment = environments;
+        //console.log(this.environments);
+    });
+
+}
+
    
 
 
   buildRequestJson() {
     // fill resBody with data from Form
     //console.log(this.newForm.value);
-    this.getCheckBox();
+   // this.getCheckBox();
+  this.layerString = this.ConvertLayerArrJsonToString();
+  var affectedServiceString:string[] = this.ConvertServiceArrJsonToString();
     this.selectedenv = this.newForm.get('Environment').value;
-   // this.layers = this.newForm.get('Layers').value;
+  //  this.layers = this.newForm.get('layers').value;
     this.selectedAffectedService = this.newForm.get('affectedService').value;
-    this.resBody.environment = this.selectedenv;
-										
-															
-	 
-											  
-										  
-    this.resBody.layer = this.selectedLayer;
+    this.resBody.environment = this.selectedenv;							  
+    // this.resBody.layer = this.selectedLayer;
+    this.resBody.layer = this.layerString;
     //this.resBody.affectedService = this.selectedAffectedService;
-    this.resBody.affectedService = this.selectedItems;
+    this.resBody.affectedService = affectedServiceString;
     this.resBody.status = this.newForm.get('status').value;
     this.resBody.defectId = this.newForm.get('defectId').value;
     this.resBody.assignOnGroup = this.newForm.get('assignOnGroup').value;
@@ -206,6 +250,8 @@ export class NewDeploymentComponent implements OnInit {
     
     this.resBody.assignOnUser = this.assignOnUser;
     this.resBody.pickedByUser = this.pickedByUser;
+     
+   // console.log("res body: "+JSON.stringify(this.resBody));
   }
 
   onSubmit() {
@@ -223,12 +269,12 @@ export class NewDeploymentComponent implements OnInit {
             alert('Request submitted successfully.');
             this.router.navigate(['home']);
           } else {
-            alert(data.responseStatus + " will take you Home ");
+            alert(data.responseStatus);
             this.router.navigate(['home']);
           }
         },
         error => {
-          alert(" Data not valid :: " + error);
+          alert("Invalid request Please try again.");
           this.router.navigate(['home']);
         });
   }
@@ -236,55 +282,55 @@ export class NewDeploymentComponent implements OnInit {
   get f() { return this.newForm.controls; }
 
 
-  getCheckBox() {
-    if (this.WPS === true) {
-      this.selectedLayer.push("WPS");
-      console.log(" WPS True: ");
+  // getCheckBox() {
+  //   if (this.WPS === true) {
+  //     this.selectedLayer.push("WPS");
+  //     console.log(" WPS True: ");
 
-    }
-    if (this.IIB === true) {
-      this.selectedLayer.push("IIB");
-      console.log(" IIB True: ");
+  //   }
+  //   if (this.IIB === true) {
+  //     this.selectedLayer.push("IIB");
+  //     console.log(" IIB True: ");
 
-    }
-    if (this.WSRR === true) {
-      this.selectedLayer.push("WSRR");
-      console.log(" WSRR True: ");
+  //   }
+  //   if (this.WSRR === true) {
+  //     this.selectedLayer.push("WSRR");
+  //     console.log(" WSRR True: ");
 
-    }
-    if (this.WAS === true) {
-      this.selectedLayer.push("WAS");
-      console.log(" WAS True: ");
+  //   }
+  //   if (this.WAS === true) {
+  //     this.selectedLayer.push("WAS");
+  //     console.log(" WAS True: ");
 
-    }
-    if (this.DP === true) {
-      this.selectedLayer.push("DP");
-      console.log(" DP True: ");
+  //   }
+  //   if (this.DP === true) {
+  //     this.selectedLayer.push("DP");
+  //     console.log(" DP True: ");
 
-    }
-    if (this.DB === true) {
-      this.selectedLayer.push("DB");
-      console.log(" DB True: ");
-
-
-    }
-    if (this.ODM === true) {
-      console.log(" ODM True: ");
-
-      this.selectedLayer.push("ODM");
-
-    }
-    console.log(" layers log: " + this.selectedLayer);
-
-  }
+  //   }
+  //   if (this.DB === true) {
+  //     this.selectedLayer.push("DB");
+  //     console.log(" DB True: ");
 
 
-  onItemSelect(selectedItem : any){
+  //   }
+  //   if (this.ODM === true) {
+  //     console.log(" ODM True: ");
 
-    this.selectedItems.push(selectedItem);
-    this.selectedItems.pop();
+  //     this.selectedLayer.push("ODM");
 
-  } 
+  //   }
+  //   console.log(" layers log: " + this.selectedLayer);
+
+  // }
+
+
+  // onItemSelect(selectedItem : any){
+
+  //   this.selectedItems.push(selectedItem);
+  //   this.selectedItems.pop();
+
+  // } 
 
   onItemDeSelect(item :any){
     for(var i=0;i<this.selectedItems.length;i++){

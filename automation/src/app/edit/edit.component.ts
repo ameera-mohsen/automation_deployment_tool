@@ -6,9 +6,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import { Request, RequestInfo, User } from '../_models';
-import {  AuthenticationService} from '../_services';
+import { first, isEmpty } from 'rxjs/operators';
+// import {  AuthenticationService} from '../_services';
 import {formatDate } from '@angular/common';
-
+import { Status } from '../_models';
+import { StatusService , AuthenticationService} from '../_services';
 @Component({
     selector: 'editrequests',
     templateUrl: './edit.component.html',
@@ -22,8 +24,9 @@ export class EditRequestComponent implements OnInit {
     editForm: FormGroup;
     requestInfoArr: Array<RequestInfo>;
     reqInfo = {} as RequestInfo;
-    status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'];
-    selectedStatus: string = '';
+  //  status: string[] = ['APPROVED', 'REJECTED','PENDING_APPROVAL','PENDING_VERIFICATION','IN_PROGRESS','INFO_REQUESTED','INFO_SUBMITTED','COMPLETED','CANCELED','POSTPONED'];
+    status: Status[] = [];  
+  selectedStatus: string = '';
     id: string;
     environemnt: string;
     layer: string;
@@ -48,6 +51,7 @@ export class EditRequestComponent implements OnInit {
       private formBuilder: FormBuilder,
       private authenticationService: AuthenticationService,
       private router: Router,
+      private statusService: StatusService,
       public searchService: SearchService) { }
 
     ngOnInit() {
@@ -56,7 +60,7 @@ export class EditRequestComponent implements OnInit {
           this.router.navigate(['login']);
           return;
       }
-      
+      this.loadStatuses();
       this.id = window.localStorage.getItem("id");
       this.displayName = window.localStorage.getItem("displayName");
       this.email = window.localStorage.getItem("email");
@@ -145,15 +149,22 @@ export class EditRequestComponent implements OnInit {
 
     buildRequest() {
       // fill resBody with data from Form
-      this.resBody.status = this.editForm.get('status').value;
+      var statusObj:Status = this.editForm.get('status').value;
+      console.log('dcdcdcdcccddcdcd: '+this.editForm.get('status').value);
+      this.resBody.status = statusObj.statusName;
       //this.reqInfo.comment = this.editForm.get('deploymentComment').value;
       this.resBody.requestSubject = this.editForm.get('requestSubject').value;
 
       this.addRequestInfo(this.id, this.displayName, this.editForm.get('deploymentComment').value);
       //this.requestInfo = [this.reqInfo];
       this.resBody.requestInfo = this.requestInfoArr;
+      console.log(JSON.stringify(this.resBody));
     }
-
+    private loadStatuses() {
+      this.statusService.getAll().pipe(first()).subscribe(statuses => {
+          this.status = statuses;
+      });
+  }
     onSubmit() {
         this.buildRequest();
         console.log("blablablaaaaa");

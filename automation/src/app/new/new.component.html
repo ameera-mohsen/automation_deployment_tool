@@ -52,7 +52,7 @@
           <select formControlName="Environment" placeholder="Environment" name="Environment" class="form-control"
           [ngClass]="{'is-invalid': submitted && f.Environment.errors }"
             id="Environment">
-            <option [value]="env" *ngFor="let env of environment">{{env}}</option>
+            <option [value]="env.envName" *ngFor="let env of environment"> {{env.envName}}</option>
           </select>
           <div *ngIf="submitted && f.Environment.errors" class="invalid-feedback">
             <div *ngIf="f.Environment.errors.required">Environment is required</div>
@@ -188,9 +188,9 @@
        <ng-multiselect-dropdown [ngClass]="{'is-invalid': submitted && f.affectedService.errors }"
        formControlName="affectedService"
           [placeholder]="''"
-          [data]="dropdownList"
+          [data]="affectedService"
           [(ngModel)]="selectedItems"
-          [settings]="dropdownSettings"
+          [settings]="dropdownSettingsServices"
           (onSelect)="onItemSelect($event)"
           (onDeSelect)="onItemDeSelect($event)"
         >

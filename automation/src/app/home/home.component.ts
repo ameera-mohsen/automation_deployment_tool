@@ -92,7 +92,6 @@ export class HomeComponent implements OnInit {
         this.loadServices();
         this.loadEnvironments();
         this.loadAllDeployments();
-        
     }
 
     
