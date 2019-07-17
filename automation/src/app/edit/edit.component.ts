@@ -163,10 +163,10 @@ export class EditRequestComponent implements OnInit {
 
     onSubmit() {
         this.buildRequest();
-        console.log("blablablaaaaa");
         console.log(this.requestInfoArr);
         console.log("Subject is -- " + this.resBody.requestSubject);
         console.log("comment is -- " + this.reqInfo.comment);
+        console.log("Status is -- " + this.resBody.status);
         
         this.searchService.updateRequestObj(this.resBody)
 
