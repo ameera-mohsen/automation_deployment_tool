@@ -6,3 +6,5 @@ export * from './service';
 export * from './environment';
 export * from './requestInfo';
 export * from './request';
+export * from './userRequest';
+

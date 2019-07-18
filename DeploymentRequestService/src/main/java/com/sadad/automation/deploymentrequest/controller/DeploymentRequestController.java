@@ -59,6 +59,11 @@ public class DeploymentRequestController {
 				" Deployment Request Retrived Successfully..");
 
 	}
+	
+	@GetMapping("/AllowedStatusesList/{currentStatus}/{assignedGroup}")
+	private List<String> getAllowedStatusesList(@PathVariable String currentStatus, @PathVariable String assignedGroup){	
+		return deploymentRequestService.getAllowedStatusesList(currentStatus, assignedGroup);
+	}
 
 	@GetMapping("/DeploymentReqByAssignedUserId/{userId}")
 	private ResponseEntity<CustomResponse> findDeploymentReqByAssignedUserId(@PathVariable String userId) {
@@ -149,7 +154,7 @@ public class DeploymentRequestController {
 	
 	@GetMapping("searchDeploymentRequestByCriteria")
 	public ResponseEntity<CustomResponse> searchDeploymentRequestByCriteria(@RequestParam MultiValueMap<String,String> searchCriteria){
-		List<DeploymentRequest> deploymentRequestList = deploymentRequestService.searchDeploymentRequestByCriteria(searchCriteria);	
+		List<DeploymentRequest> deploymentRequestList = deploymentRequestService.searchDeploymentRequestByCriteria(searchCriteria);
 		return deploymentRequestService.buildSuccessListResponse(deploymentRequestList, " Deployment Request Retrived Successfully..");	
 	}
 

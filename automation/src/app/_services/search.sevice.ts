@@ -91,7 +91,9 @@ export class SearchService {
 
     }
 
-
+    getAllowedStatusesList(currentStatus: String, assignedGroup: String){
+        return this.http.get<string[]>('http://localhost:8086/api/AllowedStatusesList/' + currentStatus + '/' + assignedGroup);
+    }
 
     searchRequestById(id: String): Observable<any> {
         let headers: HttpHeaders = new HttpHeaders();

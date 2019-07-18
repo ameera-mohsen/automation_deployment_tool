@@ -53,9 +53,7 @@ export class AllrequestsComponent implements OnInit {
   reqDetails(req: ResponseBody): void {
     window.localStorage.removeItem("viewReqId");
     window.localStorage.setItem("viewReqId", req.id.toString());
-    // TODO
-    // will create component to view all request Data
-    // this.router.navigate(['requestDetails']);
+    this.router.navigate(['details']);
   }
 
   loadAllDeployments() {

@@ -37,6 +37,7 @@ public class UserController {
 	public ResponseEntity<CustomResponse> listUsers() {
 		LOGGER.info("Entering listUsers :");
 		List<Users> user = userRepo.listUsers();
+		System.err.println(user.size());
 		return new ResponseEntity<CustomResponse>(new CustomResponse(new Status(200, "Success"), user), HttpStatus.OK);
 	}
 

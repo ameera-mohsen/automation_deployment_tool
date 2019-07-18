@@ -15,7 +15,6 @@ import com.dxc.automation.entity.Layer;
 import com.dxc.automation.entity.Service;
 import com.dxc.automation.entity.Status;
 import com.dxc.automation.service.LookupServices;
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api")
@@ -81,5 +80,4 @@ public class LookupController {
 	private List<Status> findAllStatus() {
 		return lookupService.listStatus();
 	}
-
 }

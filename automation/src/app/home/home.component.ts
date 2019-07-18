@@ -3,6 +3,7 @@ import { first, isEmpty } from 'rxjs/operators';
 import {Router} from "@angular/router";
 import { User } from '../_models';
 import { UserService } from '../_services';
+import { UserBody } from '../_models/UserBody';
 import { Layer } from '../_models';
 import { Status } from '../_models';
 import { Service } from '../_models';
@@ -22,6 +23,8 @@ import { HttpParamsOptions } from '@angular/common/http/src/params';
 import { Subscription } from 'rxjs';
 import { UserCredentialsResBody } from '../_models/userCredentialsResBody';
 import { RequestInfo} from '../_models';
+import { UserRequest } from '../_models';
+
 
 @Component({
     selector: 'home',
@@ -51,16 +54,16 @@ export class HomeComponent implements OnInit {
     resBody = {} as ResponseBody;
     resStatus = {} as ResponseStatus;
     status: object[];
-    users: User[] = [];
+    users: UserBody[];
     layers: Layer[] = [];
     statuses: Status[] = [];
     services: Service[] = [];
     environments: Environment[] = [];
     requestNumber: string = '';
-    requestOwner: string = '';
     selectedService: string = '';
     selectedEnv: string = '';
     selectedStatus: string = '';
+    selectedIntitiator: string = '';
     selectedLayer: string = '';
     public searchText : string;
     options: HttpParamsOptions = {} as HttpParamsOptions
@@ -92,6 +95,8 @@ export class HomeComponent implements OnInit {
         this.loadServices();
         this.loadEnvironments();
         this.loadAllDeployments();
+        this.loadAllUsers();
+        
     }
 
     
@@ -102,11 +107,17 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    private loadAllUsers() {
-        this.userService.getAll().pipe(first()).subscribe(users => {
-            this.users = users;
+
+    loadAllUsers() {
+        console.log('Load all users.......');
+        let res = this.userService.getAll().subscribe((data: UserRequest) => {
+          this.users = data.responseBody;
+          
         });
-    }
+      }
+
+
+
 
     private loadLayers() {
         this.layerService.getAll().pipe(first()).subscribe(layers => {
@@ -122,7 +133,6 @@ export class HomeComponent implements OnInit {
 
     private loadServices() {
         this.serviceListService.getAll().pipe(first()).subscribe(services => {
-            console.log('search --------------------------');
             this.services = services;
         });
     }
@@ -134,7 +144,7 @@ export class HomeComponent implements OnInit {
         });
 
     }
-
+  
     SearchRequests() {
         let params = new HttpParams();
         console.log('Search Request..');
@@ -156,9 +166,9 @@ export class HomeComponent implements OnInit {
         if (this.requestNumber) {
             params = params.append('id', this.requestNumber);
         }
-        console.log('requestOwner -----:: >> ' +this.requestOwner);
-        if (this.requestOwner) {
-            params = params.append('initiatorUser.displayName', this.requestOwner.toLowerCase());
+        console.log('requestOwner -----:: >> ' +this.selectedIntitiator);
+        if (this.selectedIntitiator) {
+            params = params.append('initiatorUser.displayName', this.selectedIntitiator);
         }
         
         
