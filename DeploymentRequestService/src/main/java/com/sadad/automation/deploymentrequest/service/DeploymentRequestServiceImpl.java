@@ -13,11 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.sadad.automation.deploymentrequest.common.APICaller;
 import com.sadad.automation.deploymentrequest.common.CustomResponse;
 import com.sadad.automation.deploymentrequest.common.DeploymentReqException;
@@ -243,8 +238,9 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		Users pickedBy = Req.getPickedByUser();
 		String currentStatus = Req.getStatus();
 		System.err.println("currentStatus------------'" + currentStatus);
-		System.err.println("pickedBy------------'" + pickedBy);
-		System.err.println("intitiator------------'" + intitiator);
+		System.err.println("NewStatus------------'" + newStatus);
+		System.err.println("pickedBy------------'" + pickedBy.getDisplayName());
+		System.err.println("intitiator------------'" + intitiator.getDisplayName());
 		if (checkStatus(currentStatus, newStatus)) {
 			Req.setStatus(newStatus);
 			if (newStatus.equals(String.valueOf(StatusCode.PENDING_APPROVAL))
@@ -253,7 +249,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 					|| newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
 				System.err.println("inside if condition");
 				fromUser = Req.getAssignOnUser();
-				System.err.println("fromUser ----" + fromUser);
+				System.err.println("fromUser ----" + fromUser.getDisplayName());
 				Req.setAssignOnUser(pickedBy);
 
 			} else if (newStatus.equals(String.valueOf(StatusCode.APPROVED))
@@ -270,8 +266,8 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 			Req.setDeploymentTime(deploymentTime);
 			System.err.println("after setting deployment time");
-			APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(),
-					initMailSubject(Req));
+			//APICaller.EmailAPI(Req.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + fromUser.getDisplayName(),
+				//	initMailSubject(Req));
 			Req.setAssignOnGroup(enrichAssignOnGroup(newStatus));
 			System.err.println(Req.getAssignOnGroup());
 		}
@@ -286,8 +282,11 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		case "REJECTED":
 			group = "DEVELOPMENT";
 			break;
+		//case "PENDING_APPROVAL":
+			//group = "DEPLOYMENT";
+			//break;
 		case "PENDING_APPROVAL":
-			group = "DEPLOYMENT";
+			group = "TESTING";
 			break;
 		case "PENDING_VERIFICATION":
 			group = "DEPLOYMENT";

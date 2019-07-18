@@ -1,9 +1,0 @@
-com\dxc\automation\service\LookupServicesImpl.class
-com\dxc\automation\entity\Layer.class
-com\dxc\automation\service\LookupServices.class
-com\dxc\automation\LookupServiceApplication.class
-com\dxc\automation\entity\Service.class
-com\dxc\automation\authentication\AuthenticateAPI.class
-com\dxc\automation\entity\Enviroment.class
-com\dxc\automation\entity\Status.class
-com\dxc\automation\controller\LookupController.class
