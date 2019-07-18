@@ -51,7 +51,7 @@ export class EditRequestComponent implements OnInit {
       private formBuilder: FormBuilder,
       private authenticationService: AuthenticationService,
       private router: Router,
-      private statusService: StatusService,
+     // private statusService: StatusService,
       public searchService: SearchService) { }
 
     ngOnInit() {
@@ -60,7 +60,7 @@ export class EditRequestComponent implements OnInit {
           this.router.navigate(['login']);
           return;
       }
-      this.loadStatuses();
+    //  this.loadStatuses();
       this.id = window.localStorage.getItem("id");
       this.displayName = window.localStorage.getItem("displayName");
       this.email = window.localStorage.getItem("email");
@@ -120,8 +120,10 @@ export class EditRequestComponent implements OnInit {
 
             console.log("Current status is " + data.responseBody.status);
             console.log("Assigned Group is " + data.responseBody.assignOnGroup);
-            this.searchService.getAllowedStatusesList(data.responseBody.status, data.responseBody.assignOnGroup).pipe(first()).subscribe(statuses => {
-                  this.status = statuses;                
+            this.searchService.getAllowedStatusesList(data.responseBody.status, data.responseBody.assignOnGroup).pipe(first()).subscribe(statuses => { 
+             console.log("getAllowedStatusesList statuses: "+ statuses);
+            this.ConvertStatusStrToObj(statuses);   
+              console.log("getAllowedStatusesList statuses: "+this.status);
             });
             if(data.responseBody.requestInfo != null && data.responseBody.requestInfo.length > 0){
               this.requestInfoArr = data.responseBody.requestInfo.map(index => {
@@ -142,7 +144,20 @@ export class EditRequestComponent implements OnInit {
             this.resBody= data.responseBody;          
           });    
     }
-
+    private ConvertStatusStrToObj(listStr):void {
+   //   var listObj:Status[] = [];
+      // if(listStr.length<=0){
+      //   return listObj;
+      // }  
+      //var temp:Status ;
+       for (var i = 0; i < listStr.length; i++) {
+     //    temp = new Status;
+     this.status[i] = new Status;
+     this.status[i].statusName = listStr[i] ;
+        //listObj[i] = temp;
+       }
+     //  return listObj;
+     }				
     addRequestInfo(userId, displayName, comment){
       this.reqInfo.userId = userId;
       this.reqInfo.displayName = displayName;
@@ -154,9 +169,9 @@ export class EditRequestComponent implements OnInit {
 
     buildRequest() {
       // fill resBody with data from Form
-      var statusObj:Status = this.editForm.get('status').value;
-      console.log('dcdcdcdcccddcdcd: '+this.editForm.get('status').value);
-      this.resBody.status = statusObj.statusName;
+      
+      console.log('new status: '+this.editForm.get('status').value);
+      this.resBody.status = this.editForm.get('status').value;
       //this.reqInfo.comment = this.editForm.get('deploymentComment').value;
       this.resBody.requestSubject = this.editForm.get('requestSubject').value;
 
@@ -165,11 +180,11 @@ export class EditRequestComponent implements OnInit {
       this.resBody.requestInfo = this.requestInfoArr;
       console.log(JSON.stringify(this.resBody));
     }
-    private loadStatuses() {
-      this.statusService.getAll().pipe(first()).subscribe(statuses => {
-          this.status = statuses;
-      });
-  }
+  //   private loadStatuses() {
+  //     this.statusService.getAll().pipe(first()).subscribe(statuses => {
+  //         this.status = statuses;
+  //     });
+  // }
     onSubmit() {
         this.buildRequest();
         console.log(this.requestInfoArr);

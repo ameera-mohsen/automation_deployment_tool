@@ -125,9 +125,9 @@
 
                 <div class="form-group">
                     <label for="status">New Status:</label>
-                    <select formControlName="status" placeholder="status Time" name="status" class="form-control"
+                    <select formControlName="status" placeholder="status"  name="status" class="form-control"
                         id="status">
-                        <option [value]="status.statusName" *ngFor="let Status of status">{{Status.statusName}}</option>
+                        <option [value]="Status.statusName" *ngFor="let Status of status">{{Status.statusName}}</option>
                     </select>
                 </div>
 

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Request } from '../_models';
+import { Request, Status } from '../_models';
 import { map } from 'rxjs/operators';
 import { Observable } from "rxjs";
 import { ResponseBody } from '../_models/responseBody';
@@ -92,7 +92,7 @@ export class SearchService {
     }
 
     getAllowedStatusesList(currentStatus: String, assignedGroup: String){
-        return this.http.get<string[]>('http://localhost:8086/api/AllowedStatusesList/' + currentStatus + '/' + assignedGroup);
+        return this.http.get<Status[]>('http://localhost:8086/api/AllowedStatusesList/' + currentStatus + '/' + assignedGroup);
     }
 
     searchRequestById(id: String): Observable<any> {
