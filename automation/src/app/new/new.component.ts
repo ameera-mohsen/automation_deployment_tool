@@ -74,6 +74,8 @@ export class NewDeploymentComponent implements OnInit {
   dropdownList = [];
   selectedItems = [];
   dropdownSettings = {};
+  Environmentinvalid = false;
+  submitted=false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private layerService: LayersService,
     private statusService: StatusService, private serviceListService: ServiceListService,
@@ -83,6 +85,8 @@ export class NewDeploymentComponent implements OnInit {
   ngOnInit() {
     let userData = window.localStorage.getItem("user");
     this.group = window.localStorage.getItem("group");
+
+   
 
     if (!userData) {
       console.log("Loggedin User :  " + userData);
@@ -106,10 +110,13 @@ export class NewDeploymentComponent implements OnInit {
     //this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-US', '+0530');
     this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
     this.newForm = this.formBuilder.group({
-      Environment: [this.environment.values, Validators.required],
+      
+      Environment: ['', Validators.required],
+      //Environment: ['this.environment.values', Validators.required],
       Layers: [this.selectedLayer, Validators.required],
       status: ['NEW'],
-      defectId: [this.defectId, Validators.required],
+      defectIdvalidation: ['', Validators.required],
+      //defectId: [this.defectId, Validators.required],
       assignOnGroup: ['DEPLOYMENT'],
       requestDate: [this.jstoday, Validators.required],
       deploymentTime: [this.jstoday, Validators.required],
@@ -165,7 +172,13 @@ export class NewDeploymentComponent implements OnInit {
     this.resBody.pickedByUser = this.pickedByUser;
   }
 
+  get f() { return this.newForm.controls; }
+
   onSubmit() {
+    this.submitted=true;
+    if (this.newForm.invalid) {
+      return;
+  }
     this.buildRequestJson();
     this.searchService.newRequest(this.resBody).
       subscribe(

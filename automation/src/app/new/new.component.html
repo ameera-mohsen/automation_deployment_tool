@@ -106,10 +106,21 @@
         </div>
 
         <div class="form-group">
-          <label for="defectId">defectId:</label>
-          <input formControlName="defectId" name="defectId" class="form-control" id="defectId">
-        </div>
+          <label for="defectId">defectId</label>
+          <input type="text" formControlName="defectId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.defectIdvalidation.errors }" />
+          <div *ngIf="submitted && f.defectIdvalidation.errors" class="invalid-feedback">
+              <div *ngIf="f.defectIdvalidation.errors.required">defectId is required</div>
+          </div>
+      </div>
 
+        <!--div class="form-group">
+          <label for="defectId">defectId:</label>
+          <input type="text"  formControlName="defectId"  class="form-control" [ngClass]="{'is-invalid': submitted && f.defectIdvalidation.errors}">
+          <div *ngIf="submitted && f.defectId.errors" class="invalid-feedback">
+            <div *ngIf="f.defectId.errors.required">defect is required</div>
+        </div>
+        </div>
+-->
 
         <div class="form-group">
           <label for="assignOnGroup">AssignOn Group:</label>
