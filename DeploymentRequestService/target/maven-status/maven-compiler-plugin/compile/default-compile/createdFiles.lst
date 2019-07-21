@@ -2,6 +2,7 @@ com\sadad\automation\deploymentrequest\authentication\AuthenticateAPI.class
 com\sadad\automation\deploymentrequest\entity\RequestInfo.class
 com\sadad\automation\deploymentrequest\common\DeploymentReqException.class
 com\sadad\automation\deploymentrequest\entity\Groups.class
+com\sadad\automation\deploymentrequest\entity\DatabaseSequence.class
 com\sadad\automation\deploymentrequest\entity\Email.class
 com\sadad\automation\deploymentrequest\entity\Users.class
 com\sadad\automation\deploymentrequest\service\DeploymentRequestService.class

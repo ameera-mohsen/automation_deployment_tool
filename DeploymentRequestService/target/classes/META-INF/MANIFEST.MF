@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: DeploymentRequestService
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: dibrahim2
+Built-By: aosama
 Implementation-Vendor-Id: com.sadad.automation.deploymentrequest
-Build-Jdk: 1.8.0_201
+Build-Jdk: 1.8.0_171
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
  ot-starter-parent/DeploymentRequestService
 Created-By: Maven Integration for Eclipse

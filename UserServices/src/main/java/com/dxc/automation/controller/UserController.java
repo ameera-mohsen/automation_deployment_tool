@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.dxc.automation.common.CustomResponse;
 import com.dxc.automation.common.Status;
 import com.dxc.automation.entity.Credentials;
@@ -37,6 +38,7 @@ public class UserController {
 	public ResponseEntity<CustomResponse> listUsers() {
 		LOGGER.info("Entering listUsers :");
 		List<Users> user = userRepo.listUsers();
+		System.err.println(user.size());
 		return new ResponseEntity<CustomResponse>(new CustomResponse(new Status(200, "Success"), user), HttpStatus.OK);
 	}
 

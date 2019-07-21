@@ -30,6 +30,8 @@ public interface DeploymentRequestService {
 	DeploymentRequest updateDeploymentOnPickUp(String deploymentReqId, Users pickedByUser);
 
 	DeploymentRequest updateDeploymentStatus(String deploymentReqId, String status, Date deploymentTime);
+	
+	DeploymentRequest updateDeploymentStatusCommentSubject(String deploymentReqId, String status, Date deploymentTime, String requestSubject);
 
 	DeploymentRequest addRequestInfo(RequestInfo requestInfo, String deploymentRequestId, String newStatus);
 
@@ -42,5 +44,8 @@ public interface DeploymentRequestService {
 	ResponseEntity<CustomResponse> buildFailiarResponse();
 	
 	List<DeploymentRequest> searchDeploymentRequestByCriteria(MultiValueMap<String,String> searchCriteria);
-
+		
+	public List<String> getAllowedStatusesList(String currentStatus, String assigedGroup);
+	
+	Object getNextSequence() throws Exception;
 }

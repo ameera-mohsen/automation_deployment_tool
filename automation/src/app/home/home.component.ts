@@ -3,13 +3,14 @@ import { first, isEmpty } from 'rxjs/operators';
 import {Router} from "@angular/router";
 import { User } from '../_models';
 import { UserService } from '../_services';
+import { UserBody } from '../_models/UserBody';
 import { Layer } from '../_models';
 import { Status } from '../_models';
 import { Service } from '../_models';
 import { Environment } from '../_models';
 import { Request } from '../_models';
 import { LayersService } from '../_services';
-import { StatusService } from '../_services';
+import { StatusService , AuthenticationService} from '../_services';
 import { ServiceListService } from '../_services';
 import { EnvironmentService } from '../_services';
 import { SearchService } from '../_services';
@@ -22,6 +23,8 @@ import { HttpParamsOptions } from '@angular/common/http/src/params';
 import { Subscription } from 'rxjs';
 import { UserCredentialsResBody } from '../_models/userCredentialsResBody';
 import { RequestInfo} from '../_models';
+import { UserRequest } from '../_models';
+
 
 @Component({
     selector: 'home',
@@ -51,22 +54,22 @@ export class HomeComponent implements OnInit {
     resBody = {} as ResponseBody;
     resStatus = {} as ResponseStatus;
     status: object[];
-    users: User[] = [];
+    users: UserBody[];
     layers: Layer[] = [];
     statuses: Status[] = [];
     services: Service[] = [];
     environments: Environment[] = [];
     requestNumber: string = '';
-    requestOwner: string = '';
     selectedService: string = '';
     selectedEnv: string = '';
     selectedStatus: string = '';
+    selectedIntitiator: string = '';
     selectedLayer: string = '';
     public searchText : string;
     options: HttpParamsOptions = {} as HttpParamsOptions
     constructor( private router: Router, private userService: UserService, private layerService: LayersService,
         private statusService: StatusService, private serviceListService: ServiceListService,
-        private environmentService: EnvironmentService, private searchService: SearchService ) {
+        private environmentService: EnvironmentService,private authenticationService: AuthenticationService, private searchService: SearchService ) {
        // this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     }
@@ -78,7 +81,7 @@ export class HomeComponent implements OnInit {
         let userData = window.localStorage.getItem("user");
         if(!userData) {
             console.log("Loggedin User :  "  + userData);
-            alert("Invalid action. User is Not loggedIn")
+            //alert("Invalid action. User is Not loggedIn")
             this.router.navigate(['login']);
             return;
         }
@@ -86,14 +89,13 @@ export class HomeComponent implements OnInit {
         this.displayName = window.localStorage.getItem("displayName");
         this.email = window.localStorage.getItem("email");
         this.group = window.localStorage.getItem("group");
-
-
-        
+ 
         this.loadLayers();
         this.loadStatuses();
         this.loadServices();
         this.loadEnvironments();
         this.loadAllDeployments();
+        this.loadAllUsers();
         
     }
 
@@ -105,11 +107,17 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    private loadAllUsers() {
-        this.userService.getAll().pipe(first()).subscribe(users => {
-            this.users = users;
+
+    loadAllUsers() {
+        console.log('Load all users.......');
+        let res = this.userService.getAll().subscribe((data: UserRequest) => {
+          this.users = data.responseBody;
+          
         });
-    }
+      }
+
+
+
 
     private loadLayers() {
         this.layerService.getAll().pipe(first()).subscribe(layers => {
@@ -136,12 +144,13 @@ export class HomeComponent implements OnInit {
         });
 
     }
-
+  
     SearchRequests() {
         let params = new HttpParams();
         console.log('Search Request..');
         
         console.log(this.requestNumber);
+
         if (this.selectedLayer) {
             params = params.append('Layer', this.selectedLayer);
         }
@@ -154,6 +163,15 @@ export class HomeComponent implements OnInit {
         if (this.selectedStatus) {
             params = params.append('Status', this.selectedStatus);
         }
+        if (this.requestNumber) {
+            params = params.append('id', this.requestNumber);
+        }
+        console.log('requestOwner -----:: >> ' +this.selectedIntitiator);
+        if (this.selectedIntitiator) {
+            params = params.append('initiatorUser.displayName', this.selectedIntitiator);
+        }
+        
+        
         console.log('Search Request.. Parameters:: >> ' + params.getAll);
 
         this.searchService.searchRequestsByCriteria(params).subscribe((data: Request) => {
@@ -183,8 +201,25 @@ export class HomeComponent implements OnInit {
         this.router.navigate(['edit']);
 
     }
-    
-    
+    logout() {
+        // remove user from local storage to log user out
+        // this.router.navigate(['login']);
+        // localStorage.removeItem('user');
+        this.authenticationService.logout();
+       
+    }
 
-     
+    displayname( displayname :string){
+    var array = displayname.split(" ");
+    for (var  i=0;i< array.length ;i++ ){
+        array[i]=array[i].charAt(0).toUpperCase() +array[i].slice(1)
+    }
+    var display="";
+    for (var  i=0;i< array.length ;i++ ){
+        display+=array[i]+" ";
+    }
+    return display;
+    }
+
+  
 }

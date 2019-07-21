@@ -8,7 +8,7 @@
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" [routerLink]="['/login']"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+        <li><a href="#" (click)="logout()"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
         </li>
       </ul>
     </div>
@@ -47,14 +47,38 @@
       <h2 class="text-center">Create New Deployment Request </h2>
       <form [formGroup]="newForm" (ngSubmit)="onSubmit()">
 
-        <div class="form-group">
-          <label for="Environment">Environment:</label>
+       <div class="form-group required">
+          <label class="control-label" for="Environment">Environment:</label>
           <select formControlName="Environment" placeholder="Environment" name="Environment" class="form-control"
+          [ngClass]="{'is-invalid': submitted && f.Environment.errors }"
             id="Environment">
-            <option [value]="env" *ngFor="let env of environment">{{env}}</option>
+            <option [value]="env.envName" *ngFor="let env of environment"> {{env.envName}}</option>
           </select>
+          <div *ngIf="submitted && f.Environment.errors" class="invalid-feedback">
+            <div *ngIf="f.Environment.errors.required">Environment is required</div>
         </div>
-
+        </div>
+	   
+										 
+				  <div class="form-group required" >
+            <label class="control-label">Layers:</label>
+                 <ng-multiselect-dropdown [ngClass]="{'is-invalid': submitted && f.layers.errors }"
+                 formControlName="layers"
+                    [placeholder]="''"
+                    [data]="layers"
+                    [(ngModel)]="selectedlayers"
+                    [settings]="dropdownSettings"
+                    (onSelect)="onItemSelectLayer($event)"
+                    (onDeSelect)="onItemDeSelectLayer($event)"
+                  >
+                  </ng-multiselect-dropdown>
+                </div>
+              <div *ngIf="submitted && f.layers.errors" style="color:#E23418;font-size: 80%;">
+                  <div *ngIf="f.layers.errors.required">Layers is required</div>
+              </div>					  
+			  
+             
+        <!--
         <div class="form-group">
           <label for="Layers" class= "checkbox_space">Layers: </label>
           
@@ -99,12 +123,14 @@
             WSRR
           </label>
         </div>
+        -->
 
-        <div class="form-group">
-          <label for="status">Status:</label>
-          <input formControlName="status" name="status" class="form-control" id="status" >
+        <div class="form-group required">
+          <label class="control-label" for="status">Status:</label>
+          <input formControlName="status" name="status" class="form-control" id="status" readonly="true">
         </div>
 
+<<<<<<< HEAD
         <div class="form-group">
           <label for="defectId">defectId</label>
           <input type="text" formControlName="defectId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.defectIdvalidation.errors }" />
@@ -121,15 +147,27 @@
         </div>
         </div>
 -->
+=======
+        
+          
 
-        <div class="form-group">
-          <label for="assignOnGroup">AssignOn Group:</label>
+        <div class="form-group required">
+          <label class="control-label" for="defectId">defectId:</label>
+          <input formControlName="defectId" name="defectId" class="form-control" [ngClass]="{'is-invalid': submitted && f.defectId.errors }" id="defectId">
+          <div *ngIf="submitted && f.defectId.errors" class="invalid-feedback">
+            <div *ngIf="f.defectId.errors.required">DefectId is required</div>
+        </div>
+        </div>
+>>>>>>> f80453375d828f8681d24c1ef14a12c16c08eff3
+
+        <div class="form-group required">
+          <label class="control-label" for="assignOnGroup">AssignOn Group:</label>
           <input formControlName="assignOnGroup" name="assignOnGroup" class="form-control" id="assignOnGroup"
             readonly="true">
         </div>
 
-        <div class="form-group">
-          <label for="requestDate">Request Date: </label>
+        <div class="form-group required">
+          <label class="control-label" for="requestDate">Request Date: </label>
           <input formControlName="requestDate" name="requestDate" class="form-control" id="requestDate">
         </div>
 
@@ -138,14 +176,20 @@
           <input formControlName="deploymentTime" name="deploymentTime" class="form-control" id="deploymentTime">
         </div>
 
-        <div class="form-group">
-          <label for="reason">Deployment Reason: </label>
-          <input formControlName="reason" name="reason" class="form-control" id="reason">
+        <div class="form-group required">
+          <label class="control-label" for="reason">Deployment Reason: </label>
+          <input formControlName="reason" name="reason" class="form-control" [ngClass]="{'is-invalid': submitted && f.reason.errors }" id="reason">
+          <div *ngIf="submitted && f.reason.errors" class="invalid-feedback">
+            <div *ngIf="f.reason.errors.required">Deployment Reason is required</div>
+        </div>
         </div>
 
-        <div class="form-group">
-          <label for="releaseNote">Release Note: </label>
-          <input formControlName="releaseNote" name="releaseNote" class="form-control" id="releaseNote">
+        <div class="form-group required">
+          <label class="control-label" for="releaseNote">Release Note: </label>
+          <input formControlName="releaseNote" name="releaseNote" class="form-control" [ngClass]="{'is-invalid': submitted && f.releaseNote.errors }" id="releaseNote">
+          <div *ngIf="submitted && f.releaseNote.errors" class="invalid-feedback">
+            <div *ngIf="f.releaseNote.errors.required">Release Note is required</div>
+        </div>
         </div>
 
         <!--        <div class="form-group">
@@ -156,18 +200,25 @@
           </select>
         </div>
       -->
-<div class="form-group">
-       <ng-multiselect-dropdown
+      
+
+<div class="form-group required" >
+		<label class="control-label">Affected Service</label>											   
+       <ng-multiselect-dropdown [ngClass]="{'is-invalid': submitted && f.affectedService.errors }"
        formControlName="affectedService"
-          [placeholder]="'Affected Service'"
-          [data]="dropdownList"
+          [placeholder]="''"
+          [data]="affectedService"
           [(ngModel)]="selectedItems"
-          [settings]="dropdownSettings"
+          [settings]="dropdownSettingsServices"
           (onSelect)="onItemSelect($event)"
           (onDeSelect)="onItemDeSelect($event)"
         >
         </ng-multiselect-dropdown>
       </div>
+    <div *ngIf="submitted && f.affectedService.errors"    style="color:#E23418;font-size: 80%;">
+        <div *ngIf="f.affectedService.errors.required">Affected Service is required</div>
+    </div>
+      
 
         <button class="btn btn-success">Send</button>
       </form>

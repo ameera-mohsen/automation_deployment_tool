@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Request } from '../_models';
+import { Request, Status } from '../_models';
 import { map } from 'rxjs/operators';
 import { Observable } from "rxjs";
 import { ResponseBody } from '../_models/responseBody';
@@ -38,6 +38,19 @@ export class SearchService {
                     .append('Access-Control-Allow-Headers', "X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding")
             });
     }
+
+    updateRequestData(reqId: String, newStatus: string, requestSubject : string): Observable<any> {
+        // var myDate ='2019-12-1-12:20:11';
+          return this.http.put('http://localhost:8086/api/UpdateDeploymentRequestStatusSubject/' + reqId+ '/' + newStatus + '/' + requestSubject,
+              {
+                  headers: new HttpHeaders()
+                      .append('Access-Control-Allow-Origin', '*')
+                      .append('Content-Type', 'application/json')
+                      .append('Accept', 'application/json')
+                      .append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT, PATCH')
+                      .append('Access-Control-Allow-Headers', "X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding")
+              });
+      }
 
     getNowDate() {
         //return string
@@ -78,7 +91,9 @@ export class SearchService {
 
     }
 
-
+    getAllowedStatusesList(currentStatus: String, assignedGroup: String){
+        return this.http.get<Status[]>('http://localhost:8086/api/AllowedStatusesList/' + currentStatus + '/' + assignedGroup);
+    }
 
     searchRequestById(id: String): Observable<any> {
         let headers: HttpHeaders = new HttpHeaders();

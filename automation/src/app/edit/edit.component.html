@@ -8,7 +8,7 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" [routerLink]="['/login']"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                <li><a href="#" (click)="logout()"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
                 </li>
             </ul>
         </div>
@@ -118,26 +118,44 @@
                   </div>
 
                 <div class="form-group">
+                    <label for="requestSubject">Version:</label>
+                    <input formControlName="requestSubject" name="requestSubject"
+                        class="form-control" id="requestSubject" [readonly]="this.isRequestSubjectDisabled">
+                </div>
+
+                <div class="form-group">
                     <label for="status">New Status:</label>
-                    <select formControlName="status" placeholder="status Time" name="status" class="form-control"
+                    <select formControlName="status" placeholder="status"  name="status" class="form-control"
                         id="status">
-                        <option [value]="statu" *ngFor="let Status of status">{{Status}}</option>
+                        <option [value]="Status.statusName" *ngFor="let Status of status">{{Status.statusName}}</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="serviceVersion">Version:</label>
-                    <input formControlName="serviceVersion" name="serviceVersion"
-                        class="form-control" id="serviceVersion">
-                </div>
+                    <table class="table" *ngIf="requestInfoArr?.length">
+                        <thead>
+                            <tr>
+                                <th>Comment</th>
+                                <th>By</th>
+                                <th>At</th>
+                            </tr>
+                        </thead>
 
-                <div class="form-group">
-                    <label for="comment">Comment:</label>
+                        <tbody>
+                            <tr *ngFor="let reqInfo of requestInfoArr" style="margin-bottom: 10px;">
+                                <td ><textarea class="form-control" style="width: 99%; height: 99%; border: none;" readonly>{{reqInfo.comment}}</textarea></td>
+                                <td >{{reqInfo.displayName}}</td>
+                                <td >{{reqInfo.time}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <label for="comment">New comment:</label>
                     <textarea formControlName="deploymentComment" placeholder="Deployment Comment" name="deploymentComment"
                         class="form-control" id="deploymentComment"></textarea>
                 </div>
+
                 <button class="btn btn-success">Update</button>
             </form>
-
 
         </div>

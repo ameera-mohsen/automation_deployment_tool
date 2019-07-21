@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.sadad.automation.deploymentrequest.common.CustomResponse;
 import com.sadad.automation.deploymentrequest.common.Status;
 import com.sadad.automation.deploymentrequest.entity.DeploymentRequest;
@@ -59,6 +60,11 @@ public class DeploymentRequestController {
 				" Deployment Request Retrived Successfully..");
 
 	}
+	
+	@GetMapping("/AllowedStatusesList/{currentStatus}/{assignedGroup}")
+	private List<String> getAllowedStatusesList(@PathVariable String currentStatus, @PathVariable String assignedGroup){	
+		return deploymentRequestService.getAllowedStatusesList(currentStatus, assignedGroup);
+	}
 
 	@GetMapping("/DeploymentReqByAssignedUserId/{userId}")
 	private ResponseEntity<CustomResponse> findDeploymentReqByAssignedUserId(@PathVariable String userId) {
@@ -69,6 +75,7 @@ public class DeploymentRequestController {
 
 	@PostMapping("/addDeploymentRequest")
 	private ResponseEntity<CustomResponse> addDeploymentRequest(@RequestBody DeploymentRequest deploymentRequest) {
+		System.err.println("In addDeploymentRequest --- ");
 		DeploymentRequest request = deploymentRequestService.addDeploymentRequest(deploymentRequest);
 		return deploymentRequestService.buildSuccessResponse(request,
 				" Deployment Request Created and Assigned Successfully..");
@@ -80,7 +87,7 @@ public class DeploymentRequestController {
 		DeploymentRequest request = deploymentRequestService.updateDeploymentRequest(deploymentRequest);
 		return deploymentRequestService.buildSuccessResponse(request, " Deployment Request Updated Successfully..");
 	}
-
+	
 	// TODO
 	@PutMapping("/DeploymentRequestPicked/{deploymentReqId}")
 	public ResponseEntity<CustomResponse> deploymentRequestPicked(@PathVariable String deploymentReqId,
@@ -107,6 +114,16 @@ public class DeploymentRequestController {
 			@PathVariable String newStatus) {
 		DeploymentRequest deploymentRequest = deploymentRequestService.updateDeploymentStatus(deploymentReqId,
 				newStatus, new Date());
+		return deploymentRequestService.buildSuccessResponse(deploymentRequest,
+				" Deployment Status Updated and Assigned Successfully..");
+
+	}
+	
+	@PutMapping("/UpdateDeploymentRequestStatusSubject/{deploymentReqId}/{newStatus}/{requestSubject}")
+	public ResponseEntity<CustomResponse> updateDeploymentStatusCommentSubject(@PathVariable String deploymentReqId,
+			@PathVariable String newStatus, @PathVariable String requestSubject) {
+		DeploymentRequest deploymentRequest = deploymentRequestService.updateDeploymentStatusCommentSubject(deploymentReqId, newStatus, 
+				new Date(), requestSubject);
 		return deploymentRequestService.buildSuccessResponse(deploymentRequest,
 				" Deployment Status Updated and Assigned Successfully..");
 
@@ -138,7 +155,7 @@ public class DeploymentRequestController {
 	
 	@GetMapping("searchDeploymentRequestByCriteria")
 	public ResponseEntity<CustomResponse> searchDeploymentRequestByCriteria(@RequestParam MultiValueMap<String,String> searchCriteria){
-		List<DeploymentRequest> deploymentRequestList = deploymentRequestService.searchDeploymentRequestByCriteria(searchCriteria);	
+		List<DeploymentRequest> deploymentRequestList = deploymentRequestService.searchDeploymentRequestByCriteria(searchCriteria);
 		return deploymentRequestService.buildSuccessListResponse(deploymentRequestList, " Deployment Request Retrived Successfully..");	
 	}
 
