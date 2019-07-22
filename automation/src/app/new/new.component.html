@@ -130,24 +130,6 @@
           <input formControlName="status" name="status" class="form-control" id="status" readonly="true">
         </div>
 
-<<<<<<< HEAD
-        <div class="form-group">
-          <label for="defectId">defectId</label>
-          <input type="text" formControlName="defectId" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.defectIdvalidation.errors }" />
-          <div *ngIf="submitted && f.defectIdvalidation.errors" class="invalid-feedback">
-              <div *ngIf="f.defectIdvalidation.errors.required">defectId is required</div>
-          </div>
-      </div>
-
-        <!--div class="form-group">
-          <label for="defectId">defectId:</label>
-          <input type="text"  formControlName="defectId"  class="form-control" [ngClass]="{'is-invalid': submitted && f.defectIdvalidation.errors}">
-          <div *ngIf="submitted && f.defectId.errors" class="invalid-feedback">
-            <div *ngIf="f.defectId.errors.required">defect is required</div>
-        </div>
-        </div>
--->
-=======
         
           
 
@@ -158,7 +140,6 @@
             <div *ngIf="f.defectId.errors.required">DefectId is required</div>
         </div>
         </div>
->>>>>>> f80453375d828f8681d24c1ef14a12c16c08eff3
 
         <div class="form-group required">
           <label class="control-label" for="assignOnGroup">AssignOn Group:</label>
