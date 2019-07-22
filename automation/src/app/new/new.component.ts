@@ -93,11 +93,7 @@ layerString: string[] = [];
   selectedItems = [];
   selectedlayers=[];	
   dropdownSettings = {};
-<<<<<<< HEAD
-  Environmentinvalid = false;
-=======
   dropdownSettingsServices ={};
->>>>>>> f80453375d828f8681d24c1ef14a12c16c08eff3
   submitted=false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private layerService: LayersService,
@@ -108,8 +104,6 @@ layerString: string[] = [];
   ngOnInit() {
     let userData = window.localStorage.getItem("user");
     this.group = window.localStorage.getItem("group");
-
-   
 
     if (!userData) {
       console.log("Loggedin User :  " + userData);
@@ -133,20 +127,12 @@ layerString: string[] = [];
     //this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-US', '+0530');
     this.jstoday = formatDate(this.today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
     this.newForm = this.formBuilder.group({
-<<<<<<< HEAD
-      
-      Environment: ['', Validators.required],
-      //Environment: ['this.environment.values', Validators.required],
-      Layers: [this.selectedLayer, Validators.required],
-=======
    
 	selectedLayers: new FormArray([]),								
       Environment: [this.environment.values, Validators.required],
       layers: [this.selectedLayer, Validators.required],
->>>>>>> f80453375d828f8681d24c1ef14a12c16c08eff3
       status: ['NEW'],
-      defectIdvalidation: ['', Validators.required],
-      //defectId: [this.defectId, Validators.required],
+      defectId: [this.defectId, Validators.required],
       assignOnGroup: ['DEPLOYMENT'],
       requestDate: [this.jstoday, Validators.required],
       deploymentTime: [this.jstoday, Validators.required],
@@ -268,16 +254,8 @@ private loadEnvironments() {
    // console.log("res body: "+JSON.stringify(this.resBody));
   }
 
-  get f() { return this.newForm.controls; }
-
   onSubmit() {
     this.submitted=true;
-<<<<<<< HEAD
-    if (this.newForm.invalid) {
-      return;
-  }
-=======
->>>>>>> f80453375d828f8681d24c1ef14a12c16c08eff3
     this.buildRequestJson();
 
     if (this.newForm.invalid) {
