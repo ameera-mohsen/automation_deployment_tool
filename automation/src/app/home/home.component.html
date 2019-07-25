@@ -126,7 +126,7 @@
               <td>{{req.assignOnGroup}}</td>
               <td>{{req.requestDate}}</td>
               <td>{{req.deploymentTime}}</td>
-              <td><button *ngIf="req.assignOnUser.groups==group" class="btn btn-success" (click)="editRequest(req)" style="margin-left: 20px;"> Edit</button></td>
+              <td><button *ngIf="req.assignOnUser.groups.toUpperCase() == group.toUpperCase()" class="btn btn-success" (click)="editRequest(req)" style="margin-left: 20px;"> Edit</button></td>
             </tr>
           </tbody>
         </table>
