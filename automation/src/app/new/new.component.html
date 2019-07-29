@@ -199,7 +199,11 @@
     <div *ngIf="submitted && f.affectedService.errors"    style="color:#E23418;font-size: 80%;">
         <div *ngIf="f.affectedService.errors.required">Affected Service is required</div>
     </div>
-      
+    <div>
+      <label class="control-label">New comment:</label>
+                    <textarea formControlName="deploymentComment" placeholder="Deployment Comment" name="deploymentComment"
+                        class="form-control" id="deploymentComment"></textarea>
+    </div>  
 
         <button class="btn btn-success">Send</button>
       </form>

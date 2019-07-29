@@ -3,7 +3,7 @@ import { User, Layer, Status, Service, Environment } from '../_models';
 import { ResponseBody } from '../_models/responseBody';
 import { ResponseStatus } from '../_models/responseStatus';
 import { UserService, SearchService, StatusService,AuthenticationService, EnvironmentService, ServiceListService, LayersService } from '../_services';
-import { Request } from '../_models';
+import { Request , RequestInfo } from '../_models';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
@@ -29,8 +29,8 @@ export class NewDeploymentComponent implements OnInit {
   ];
   					 
 							 
-							 
-		
+	requestInfoArr : Array<RequestInfo> = [];						 
+  reqInfo = {} as RequestInfo;
 
   assignOnUser: User = {
     "userId": "5c5807e7fb6fc0356792bd44",
@@ -139,6 +139,7 @@ layerString: string[] = [];
       reason: [this.reason, Validators.required],
       releaseNote: [this.releaseNote, Validators.required],
     affectedService: ['', Validators.required],
+    deploymentComment: ['']
     });
 
   // this.addCheckboxes();			 
@@ -172,6 +173,8 @@ layerString: string[] = [];
     this.loadLayers();
     this.loadServices();
     this.loadEnvironments();
+
+    
 
 
   }
@@ -218,6 +221,17 @@ private loadEnvironments() {
 
 }
 
+addRequestInfo(userId, displayName, comment){
+  this.reqInfo.userId = userId;
+  this.reqInfo.displayName = displayName;
+  let today = new Date();
+  this.reqInfo.time = formatDate(today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
+  this.reqInfo.comment = comment;
+  console.log(this.reqInfo);
+  this.requestInfoArr.push(this.reqInfo);
+  console.log("array : "+this.requestInfoArr);
+}
+
    
 
 
@@ -247,16 +261,21 @@ private loadEnvironments() {
     this.initiatorUser.email= this.email;
     this.initiatorUser.groups = 'DEVELOPMENT';
     this.resBody.initiatorUser = this.initiatorUser;
-    
+
+    this.addRequestInfo(this.id, this.displayName, this.newForm.get('deploymentComment').value);
+     this.resBody.requestInfo = this.requestInfoArr;
+    console.log(JSON.stringify(this.resBody));
     this.resBody.assignOnUser = this.assignOnUser;
     this.resBody.pickedByUser = this.pickedByUser;
      
+    
    // console.log("res body: "+JSON.stringify(this.resBody));
   }
 
   onSubmit() {
     this.submitted=true;
     this.buildRequestJson();
+    console.log(this.requestInfoArr);
 
     if (this.newForm.invalid) {
       return;
@@ -325,12 +344,12 @@ private loadEnvironments() {
   // }
 
 
-  // onItemSelect(selectedItem : any){
+  onItemSelect(selectedItem : any){
 
-  //   this.selectedItems.push(selectedItem);
-  //   this.selectedItems.pop();
+    this.selectedItems.push(selectedItem);
+    this.selectedItems.pop();
 
-  // } 
+  } 
 
   onItemDeSelect(item :any){
     for(var i=0;i<this.selectedItems.length;i++){
