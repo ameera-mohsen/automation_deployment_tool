@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
         this.registerForm = this.formBuilder.group({
             mail: [this.mail, Validators.required],
             username: [this.username, Validators.required],
-            number: [this.number, Validators.required],
+            // number: [this.number, Validators.required],
             password: [this.password, [Validators.required, Validators.minLength(6)]],
             Group: [this.groups.values, Validators.required],
         });
@@ -73,12 +73,12 @@ export class RegisterComponent implements OnInit {
     buildRequest(){
        console.log(this.f.username.value);
        console.log(this.f.password.value);
-       console.log(this.f.number.value);
+    //    console.log(this.f.number.value);
        console.log(this.f.mail.value);
        this.userBody.displayName=this.f.username.value;
        this.userBody.email=this.f.mail.value;
        this.userBody.userStatus=this.userStatus;
-       this.userBody.number=this.f.number.value;
+    //    this.userBody.number=this.f.number.value;
        this.group.groupNames = this.f.Group.value;
        this.userBody.groups=this.group;
        this.privilege.level=1;

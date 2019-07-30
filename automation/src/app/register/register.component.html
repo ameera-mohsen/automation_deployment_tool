@@ -29,13 +29,13 @@
             <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
         </div>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group"> 
         <label for="number">Number</label>
         <input type="text" formControlName="number" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.number.errors }" />
         <div *ngIf="submitted && f.number.errors" class="invalid-feedback">
             <div *ngIf="f.number.errors.required">Number is required</div>            
         </div>
-    </div>
+    </div>-->
     <div class="form-group">
         <label for="group">Group:</label>
         <select formControlName="Group" placeholder="Group" name="Group" class="form-control"
