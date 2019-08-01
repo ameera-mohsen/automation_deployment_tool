@@ -33,6 +33,12 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	final String INFO_EMAIL_BODY = "your Deployment Request Updated to ";
 	final String ASSIGNE_EMAIL_BODY = "This email inform you that there is a waiting action from Automation Service assigned to you by ";
 
+	final String DEPLOYMENT_TEAM = "DEPLOYMENT";
+	final String DEVELOPMENT_TEAM = "DEVELOPMENT";
+	final String TESTING_TEAM = "TESTING";
+	
+	final String AMS_MAIL = "SADAD_AMS@dxc.com";
+	
 	@Override
 	public DeploymentRequest addDeploymentRequest(DeploymentRequest deploymentRequest) {
 		if (deploymentRequest != null) {
@@ -92,7 +98,11 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentRequest.getId());
 		enrichDeploymentRequest(deploymentReqToUpdated, deploymentRequest.getStatus(), deploymentRequest.getDeploymentTime());
 		APICaller.EmailAPI(deploymentReqToUpdated.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + deploymentReqToUpdated.getInitiatorUser().getDisplayName(), deploymentRequest.getRequestSubject());
-		
+		//Notify DEPLOYMENT with REJECTED status 
+		if(deploymentReqToUpdated.getStatus().equals(String.valueOf(StatusCode.REJECTED))) {
+			APICaller.EmailAPI(AMS_MAIL, "This is to notify you that request id " + deploymentReqToUpdated.getId() + " has been rejected by " 
+		+ deploymentReqToUpdated.getInitiatorUser().getDisplayName(), deploymentRequest.getRequestSubject());
+		}
 		return mongoTemplate.save(deploymentRequest);
 
 	}
@@ -254,12 +264,13 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 			} else if (newStatus.equals(String.valueOf(StatusCode.APPROVED))
 					|| newStatus.equals(String.valueOf(StatusCode.IN_PROGRESS))) {
+				//DEP
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(APICaller.UserAPI());
-			} else if (newStatus.equals(String.valueOf(StatusCode.COMPLETED))
-					|| newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
+			} else if (newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
 					|| newStatus.equals(String.valueOf(StatusCode.CANCELED))
 					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))) {
+				//DEV
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(intitiator);
 			}
@@ -279,6 +290,9 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		case "APPROVED":
 			group = "DEPLOYMENT";
 			break;
+			//AND
+			//group = "DEVELOPMENT";
+			//break;
 		case "REJECTED":
 			group = "DEVELOPMENT";
 			break;
@@ -291,8 +305,11 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		case "PENDING_VERIFICATION":
 			group = "DEPLOYMENT";
 			break;
+		/*
+		 * case "INFO_REQUESTED": group = "DEPLOYMENT"; break;
+		 */
 		case "INFO_REQUESTED":
-			group = "DEPLOYMENT";
+			group = "DEVELOPMENT";
 			break;
 		case "INFO_SUBMITTED":
 			group = "TESTING";
@@ -303,7 +320,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		case "IN_PROGRESS":
 			group = "DEPLOYMENT";
 			break;
-		case "POST_PONED":
+		case "POSTPONED":
 			group = "DEPLOYMENT";
 			break;
 		case "CANCELED":
@@ -374,11 +391,12 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	@Override
 	public List<String> getAllowedStatusesList(String currentStatus, String assigedGroup) {
 		List<String> resultList = new ArrayList<String>();
-		switch (currentStatus) {
-		case "SENT":
+		switch (StatusCode.valueOf(currentStatus)) {
+		case SENT:
 			switch (assigedGroup) {
-			case "DEPLOYMENT":
-				resultList.add("PENDING_APPROVAL");	
+			case DEPLOYMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.PENDING_APPROVAL));
+				resultList.add(String.valueOf(StatusCode.INFO_REQUESTED));	
 				break;
 			default:
 				resultList.add(currentStatus);
@@ -386,13 +404,13 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			break;
 			
-		case "PENDING_APPROVAL":
+		case PENDING_APPROVAL:
 			switch (assigedGroup) {
-			case "TESTING":
-				resultList.add("APPROVED");
-				resultList.add("REJECTED");	
-				resultList.add("POSTPONED");	
-				resultList.add("INFO_REQUESTED");	
+			case TESTING_TEAM:
+				resultList.add(String.valueOf(StatusCode.APPROVED));
+				resultList.add(String.valueOf(StatusCode.REJECTED));	
+				resultList.add(String.valueOf(StatusCode.POSTPONED));	
+				resultList.add(String.valueOf(StatusCode.INFO_REQUESTED));	
 				break;
 			default:
 				 resultList.add(currentStatus);
@@ -400,12 +418,11 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}		
 			break;
 			
-		case "INFO_REQUESTED":
+		case INFO_REQUESTED:
 			switch (assigedGroup) {
-			case "DEVELOPMENT":
-				resultList.add("INFO_SUBMITTED");
-				resultList.add("REJECTED");	
-				resultList.add("POSTPONED");	
+			case DEVELOPMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.SENT));
+				resultList.add(String.valueOf(StatusCode.CANCELED));
 				break;
 			default:
 				resultList.add(currentStatus);
@@ -413,12 +430,10 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			break;
 			
-		case "INFO_SUBMITTED":
+		case APPROVED:
 			switch (assigedGroup) {
-			case "TESTING":
-				resultList.add("APPROVED");
-				resultList.add("REJECTED");	
-				resultList.add("POSTPONED");	
+			case DEPLOYMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.IN_PROGRESS));	
 				break;
 			default:
 				resultList.add(currentStatus);
@@ -426,13 +441,28 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			break;
 			
-		case "APPROVED":
+		case REJECTED:
 			switch (assigedGroup) {
-			case "DEPLOYMENT":
-				resultList.add("IN_PROGRESS");	
+			case DEVELOPMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.REJECTED));	
 				break;
-			case "DEVELOPMENT":
-				resultList.add("CANCELLED");	
+			}
+			break;
+		case POSTPONED:
+			switch (assigedGroup) {
+			case TESTING_TEAM:
+				resultList.add(String.valueOf(StatusCode.APPROVED));	
+				resultList.add(String.valueOf(StatusCode.REJECTED));	
+				break;
+			default:
+				resultList.add(currentStatus);
+				break;
+			}
+			break;
+		case IN_PROGRESS:
+			switch (assigedGroup) {
+			case DEPLOYMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.PENDING_VERIFICATION));	
 				break;
 			default:
 				resultList.add(currentStatus);
@@ -440,13 +470,10 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			break;
 			
-		case "IN_PROGRESS":
+		case PENDING_VERIFICATION:
 			switch (assigedGroup) {
-			case "DEPLOYMENT":
-				resultList.add("PENDING_VERIFICATION");	
-				break;
-			case "DEVELOPMENT":
-				resultList.add("CANCELLED");	
+			case DEVELOPMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.VERIFIED));	
 				break;
 			default:
 				resultList.add(currentStatus);
@@ -454,10 +481,10 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			break;
 			
-		case "PENDING_VALIDATION":
+		case VERIFIED:
 			switch (assigedGroup) {
-			case "DEVELOPMENT":
-				resultList.add("VALIDATED");	
+			case TESTING_TEAM:
+				resultList.add(String.valueOf(StatusCode.COMPLETED));	
 				break;
 			default:
 				resultList.add(currentStatus);
@@ -465,13 +492,18 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 			}
 			break;
 			
-		case "VALIDATED":
+		case CANCELED:
 			switch (assigedGroup) {
-			case "DEPLOYMENT":
-				resultList.add("COMPLETED");	
+			case DEVELOPMENT_TEAM:
+				resultList.add(String.valueOf(StatusCode.CANCELED));
 				break;
-			default:
-				resultList.add(currentStatus);
+			}
+			break;
+			
+		case COMPLETED:
+			switch (assigedGroup) {
+			case TESTING_TEAM:
+				resultList.add(String.valueOf(StatusCode.COMPLETED));
 				break;
 			}
 			break;
