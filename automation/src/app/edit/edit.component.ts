@@ -174,6 +174,7 @@ export class EditRequestComponent implements OnInit {
       this.resBody.status = this.editForm.get('status').value;
       //this.reqInfo.comment = this.editForm.get('deploymentComment').value;
       this.resBody.requestSubject = this.editForm.get('requestSubject').value;
+      this.resBody.deploymentTime = this.editForm.get('deploymentTime').value;
 
       this.addRequestInfo(this.id, this.displayName, this.editForm.get('deploymentComment').value);
       //this.requestInfo = [this.reqInfo];

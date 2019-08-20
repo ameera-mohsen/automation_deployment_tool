@@ -58,7 +58,6 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 			deploymentRequest.setRequestSubject(deploymentSubject);
 			String id;
-			System.out.println("Befor Next Sequence");
 			try {
 				id = (String) getNextSequence();
 			}
@@ -96,14 +95,15 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 	@Override
 	public DeploymentRequest updateDeploymentRequest(DeploymentRequest deploymentRequest) {
 		DeploymentRequest deploymentReqToUpdated = this.findById(deploymentRequest.getId());
-		enrichDeploymentRequest(deploymentReqToUpdated, deploymentRequest.getStatus(), deploymentRequest.getDeploymentTime());
+		enrichDeploymentRequest(deploymentReqToUpdated, deploymentRequest.getStatus(), deploymentReqToUpdated.getDeploymentTime());
+		deploymentReqToUpdated.setRequestInfo(deploymentRequest.getRequestInfo());
 		APICaller.EmailAPI(deploymentReqToUpdated.getAssignOnUser().getEmail(), ASSIGNE_EMAIL_BODY + deploymentReqToUpdated.getInitiatorUser().getDisplayName(), deploymentRequest.getRequestSubject());
 		//Notify DEPLOYMENT with REJECTED status 
 		if(deploymentReqToUpdated.getStatus().equals(String.valueOf(StatusCode.REJECTED))) {
 			APICaller.EmailAPI(AMS_MAIL, "This is to notify you that request id " + deploymentReqToUpdated.getId() + " has been rejected by " 
 		+ deploymentReqToUpdated.getInitiatorUser().getDisplayName(), deploymentRequest.getRequestSubject());
 		}
-		return mongoTemplate.save(deploymentRequest);
+		return mongoTemplate.save(deploymentReqToUpdated);
 
 	}
 
@@ -254,22 +254,23 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		if (checkStatus(currentStatus, newStatus)) {
 			Req.setStatus(newStatus);
 			if (newStatus.equals(String.valueOf(StatusCode.PENDING_APPROVAL))
-					|| newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))
-					|| newStatus.equals(String.valueOf(StatusCode.PENDING_CANCEL))
-					|| newStatus.equals(String.valueOf(StatusCode.INFO_SUBMITTED))) {
-				System.err.println("inside if condition");
+					|| newStatus.equals(String.valueOf(StatusCode.POSTPONED))
+					|| newStatus.equals(String.valueOf(StatusCode.VERIFIED))
+					|| newStatus.equals(String.valueOf(StatusCode.COMPLETED))) {
+				//SIT
 				fromUser = Req.getAssignOnUser();
-				System.err.println("fromUser ----" + fromUser.getDisplayName());
 				Req.setAssignOnUser(pickedBy);
 
 			} else if (newStatus.equals(String.valueOf(StatusCode.APPROVED))
-					|| newStatus.equals(String.valueOf(StatusCode.IN_PROGRESS))) {
-				//DEP
+					|| newStatus.equals(String.valueOf(StatusCode.IN_PROGRESS))
+					|| newStatus.equals(String.valueOf(StatusCode.SENT))) {
+				//DEPLOYMENT
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(APICaller.UserAPI());
 			} else if (newStatus.equals(String.valueOf(StatusCode.INFO_REQUESTED))
 					|| newStatus.equals(String.valueOf(StatusCode.CANCELED))
-					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))) {
+					|| newStatus.equals(String.valueOf(StatusCode.REJECTED))
+					|| newStatus.equals(String.valueOf(StatusCode.PENDING_VERIFICATION))) {
 				//DEV
 				fromUser = Req.getAssignOnUser();
 				Req.setAssignOnUser(intitiator);
@@ -288,45 +289,31 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		String group = "N/A";
 		switch (status) {
 		case "APPROVED":
+		case "SENT":
+		case "IN_PROGRESS":
 			group = "DEPLOYMENT";
 			break;
 			//AND
 			//group = "DEVELOPMENT";
 			//break;
 		case "REJECTED":
+		case "INFO_REQUESTED":
+		case "CANCELED":
+		case "PENDING_VERIFICATION":
 			group = "DEVELOPMENT";
 			break;
 		//case "PENDING_APPROVAL":
 			//group = "DEPLOYMENT";
 			//break;
-		case "PENDING_APPROVAL":
-			group = "TESTING";
-			break;
-		case "PENDING_VERIFICATION":
-			group = "DEPLOYMENT";
-			break;
 		/*
 		 * case "INFO_REQUESTED": group = "DEPLOYMENT"; break;
 		 */
-		case "INFO_REQUESTED":
-			group = "DEVELOPMENT";
-			break;
 		case "INFO_SUBMITTED":
-			group = "TESTING";
-			break;
-		case "COMPLETED":
-			group = "DEVELOPMENT";
-			break;
-		case "IN_PROGRESS":
-			group = "DEPLOYMENT";
-			break;
-		case "POSTPONED":
-			group = "DEPLOYMENT";
-			break;
-		case "CANCELED":
-			group = "DEVELOPMENT";
-			break;
 		case "PENDING_CANCEL":
+		case "PENDING_APPROVAL":
+		case "POSTPONED":
+		case "VERIFIED":
+		case "COMPLETED":
 			group = "TESTING";
 			break;
 		}
@@ -359,14 +346,12 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 		Query query = new Query();
 
 		for (Entry<String, List<String>> entry : searchCriteria.entrySet()) {
-			System.out.println("entry:----------" + entry);
 			if (entry.getKey().equals("requestDateFrom")) {
 				query.addCriteria(
 						Criteria.where("requestDate").gte(entry.getValue()).lt(searchCriteria.get("requestDateTo")));
 			} else if (entry.getKey().equals("requestDateTo")) {
 				continue;
 			} else if (entry.getKey().equals("initiatorUser.displayName")) {
-				System.out.println("print here :----------");
 				query.addCriteria(Criteria.where(entry.getKey()).in(entry.getValue()));
 				//query.addCriteria(Criteria.where(entry.getKey()).regex("^"+entry.getValue().toString()));
 
@@ -381,7 +366,7 @@ public class DeploymentRequestServiceImpl implements DeploymentRequestService {
 
 	public Object getNextSequence() {
 		DatabaseSequence databaseSequence = mongoTemplate.findById("requestid",DatabaseSequence.class);
-		System.out.println("databaseSequence:" + databaseSequence.getID() +"   "+databaseSequence.getSequenceValue());
+		//System.out.println("databaseSequence:" + databaseSequence.getID() +"   "+databaseSequence.getSequenceValue());
 		int seq= databaseSequence.getSequenceValue() ;
 		databaseSequence.setSequenceValue(seq+1);
 		mongoTemplate.save(databaseSequence);
