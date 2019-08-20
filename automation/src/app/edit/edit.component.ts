@@ -159,12 +159,14 @@ export class EditRequestComponent implements OnInit {
      //  return listObj;
      }				
     addRequestInfo(userId, displayName, comment){
-      this.reqInfo.userId = userId;
-      this.reqInfo.displayName = displayName;
-      let today = new Date();
-      this.reqInfo.time = formatDate(today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
-      this.reqInfo.comment = comment;
-      this.requestInfoArr.push(this.reqInfo);
+      if(comment != null && comment != "" && comment != " "){
+        this.reqInfo.userId = userId;
+        this.reqInfo.displayName = displayName;
+        let today = new Date();
+        this.reqInfo.time = formatDate(today, 'yyyy-MM-ddTHH:mm:ss', 'en-EG');
+        this.reqInfo.comment = comment;
+        this.requestInfoArr.push(this.reqInfo);
+      }
     }
 
     buildRequest() {
