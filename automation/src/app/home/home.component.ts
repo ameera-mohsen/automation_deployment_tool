@@ -188,6 +188,17 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    show(req: ResponseBody){
+        this.group = window.localStorage.getItem("group");
+        console.log (this.group);
+        if(req.initiatorUser.groups.toLocaleUpperCase() == "DEVELOPMENT" && (req.status == "SENT" || req.status == "PENDING_APPROVAL" ||  
+        req.status == "INFO_REQUESTED" || req.status == "APPROVED" || req.status == "POSTPONED")){
+                return true;
+        }else{
+            return false;
+        }
+      }
+
     editRequest(req: ResponseBody): void{
         window.localStorage.removeItem("editReqId");
         window.localStorage.setItem("editReqId", req.id.toString());
